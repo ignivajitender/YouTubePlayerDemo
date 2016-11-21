@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
@@ -13,12 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.ui.activities.All_Image_View;
 
@@ -65,7 +69,7 @@ public static   Bitmap bitmap2;
 // Gets the layout params that will allow you to resize the layout
                 ViewGroup.LayoutParams params = layout.getLayoutParams();
 // Changes the height and width to the specified *pixels*
-                params.height = 700;
+                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
                 params.width = CardView.LayoutParams.MATCH_PARENT;
                 layout.setLayoutParams(params);
             }
@@ -76,7 +80,7 @@ public static   Bitmap bitmap2;
 // Gets the layout params that will allow you to resize the layout
                 ViewGroup.LayoutParams params = layout.getLayoutParams();
 // Changes the height and width to the specified *pixels*
-                params.height = 220;
+                params.height = (int) mContext.getResources().getInteger(R.integer.grid_row_height);
                 params.width = CardView.LayoutParams.MATCH_PARENT;
                 layout.setLayoutParams(params);
 
@@ -130,10 +134,31 @@ public static   Bitmap bitmap2;
                     .with(mContext)
 
                     .load( mImageUrl.get(position) )
+                    .asBitmap()
 //                    .bitmapTransform( new jp.wasabeef.glide.transformations.BlurTransformation( mContext, 10 ) )
                     .placeholder(R.drawable.loading).diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .thumbnail(.3f)
-                    .into( holder.mTvCategoryImg );
+                    .into(new SimpleTarget<Bitmap>() {
+
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+
+
+                            holder.mTvCategoryImg.setImageBitmap(resource);
+
+                        }
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+
+                            holder.mTvCategoryImg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.no_preview));
+
+
+                        }
+
+
+                        });
+
 
 
             holder.mTvCategoryImg.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +177,7 @@ public static   Bitmap bitmap2;
                                     bitmap2=resource;
 
                                 }
+
                             });
 
                     Intent intent = new Intent(mContext,All_Image_View.class);

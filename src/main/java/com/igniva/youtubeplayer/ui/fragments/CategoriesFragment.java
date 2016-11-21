@@ -36,7 +36,7 @@ import yt.sdk.access.InitializationException;
 /**
  * Created by igniva-php-08 on 18/5/16.
  */
-public class CategoriesFragment extends BaseFragment {
+public class CategoriesFragment extends BaseFragment implements FloatingActionMenu.OnMenuToggleListener{
     View mView;
     public static RecyclerView mRvCategories;
     private Menu menu;
@@ -103,6 +103,7 @@ public class CategoriesFragment extends BaseFragment {
         fab3 = (FloatingActionButton) mView.findViewById(R.id.fab3);
         menu_fab = (FloatingActionMenu) mView.findViewById(R.id.menu_red);
 
+      menu_fab.setOnMenuToggleListener(this);
 
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,8 +305,8 @@ public class CategoriesFragment extends BaseFragment {
             channels_name.add("Coke Studio");
             channel_thumb.add("http://img.youtube.com/vi/7w8AR7jnhpc/hqdefault.jpg");
 
-
-            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(getActivity(), channels_name, channel_thumb));
+            int no = sharedPreferences.getInt("cat", 2);
+            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(getActivity(), channels_name, channel_thumb,no));
 //
             MainActivity.toolbar.setTitle("Channels");
             mRvCategories.setHasFixedSize(true);
@@ -564,4 +565,18 @@ public class CategoriesFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void onMenuToggle(boolean opened) {
+
+        if(opened){
+
+            menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.fab_add));
+
+        }else {
+
+            menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_nav_filter));
+
+        }
+
+    }
 }

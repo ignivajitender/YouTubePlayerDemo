@@ -170,7 +170,7 @@ public class UtilsUI {
                         Log.d("Reading: ", "Reading all contacts..");
 //                        contacts = db.getAllContacts();
 
-                        mAllData = m.getMyData();
+                        mAllData = db.getAllContacts();
                         for (DataYoutubePojo cn : mAllData) {
                             String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
                                     " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
@@ -275,12 +275,12 @@ public class UtilsUI {
                         no = sharedPreferences.getInt("cat", 2);
 
                         if(no == 1) {
-                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(context, channels_name, channel_thumb));
+                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(context, channels_name, channel_thumb,2));
                             CategoriesFragment.mRvCategories.setHasFixedSize(true);
                             GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2);
                             CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
                         }else {
-                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(context, channels_name, channel_thumb));
+                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(context, channels_name, channel_thumb,1));
                             CategoriesFragment.mRvCategories.setHasFixedSize(true);
                             GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
                             CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
@@ -298,7 +298,8 @@ public class UtilsUI {
                         Log.d("Reading: ", "Reading all contacts..");
 //                        contacts = db.getAllContacts();
 
-                        mAllData = m.getMyData();
+         //               mAllData = m.getMyData();
+                        mAllData = db.getAllContacts();
                         for (DataYoutubePojo cn : mAllData) {
                             String log = "video_Id_favourite: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
                                     " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
@@ -357,10 +358,12 @@ public class UtilsUI {
                         Intent in5 = new Intent(context, YouTubeActivity.class);
                         in5.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(in5);
+                        //overridePendingTransition(R.anim.right_in, R.anim.right_out);
+
                         break;
 
                     case 6:
-                        Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+                        Uri uri = Uri.parse("market://details?id=" + "com.sqwip");
                         Intent rateApp = new Intent(Intent.ACTION_VIEW, uri);
                         // To count with Play market backstack, After pressing back button,
                         // to taken back to our application, we need to add following flags to intent.
@@ -374,7 +377,7 @@ public class UtilsUI {
                         } catch (ActivityNotFoundException e) {
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
 
-                                    Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
+                                    Uri.parse("http://play.google.com/store/apps/details?id=" + "com.sqwip")));
                         }catch (Exception e){
                             e.printStackTrace();
                         }

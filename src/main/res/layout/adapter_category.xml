@@ -63,11 +63,13 @@
 
     <ImageView
         android:id="@+id/iv_star_favourite"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
         android:src="@drawable/star_grey"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingBottom="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         />
@@ -75,8 +77,8 @@
 
     <ImageView
         android:id="@+id/iv_share_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
         android:src="@drawable/share"
         android:background="@android:color/transparent"
         android:layout_weight=".10"

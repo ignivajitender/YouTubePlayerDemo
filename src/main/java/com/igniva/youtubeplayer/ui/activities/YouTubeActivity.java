@@ -72,6 +72,8 @@ public class YouTubeActivity extends AppCompatActivity {
                 //do something you want
 
                 onBackPressed();
+                overridePendingTransition(R.anim.right_in, R.anim.right_out);
+
             }
         });
 

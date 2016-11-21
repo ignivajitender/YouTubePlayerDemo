@@ -3,6 +3,7 @@ package com.igniva.youtubeplayer.ui.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,13 +44,15 @@ public class CategoryListAdapterChannels  extends RecyclerView.Adapter<CategoryL
     Context mContext;
     SQLiteDatabase db;
     static List<DataYoutubePojo> mAllData;
+    int mData;
 
 
-    public CategoryListAdapterChannels(Context context, List<String> listCategories,List<String> listCategories_icons) {
+    public CategoryListAdapterChannels(Context context, List<String> listCategories,List<String> listCategories_icons,int data) {
         clear_channels();
         this.mImageUrl=listCategories_icons;
             this.mImageName=listCategories;
 
+        mData = data;
 
 
         CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
@@ -79,7 +83,33 @@ public class CategoryListAdapterChannels  extends RecyclerView.Adapter<CategoryL
 
             MainActivity m=new MainActivity();
             mAllData=m.getMyData();
+            if(mData ==2)
+            {
+                // Gets linearlayout
+                RelativeLayout layout = (RelativeLayout)itemView.findViewById(R.id.main_image_view);
+// Gets the layout params that will allow you to resize the layout
+                ViewGroup.LayoutParams params = layout.getLayoutParams();
+// Changes the height and width to the specified *pixels*
+                params.height = (int) mContext.getResources().getInteger(R.integer.grid_row_height);
+                params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                layout.setLayoutParams(params);
 
+            }
+            else
+            {
+                // Gets linearlayout
+                RelativeLayout layout = (RelativeLayout)itemView.findViewById(R.id.main_image_view);
+// Gets the layout params that will allow you to resize the layout
+                ViewGroup.LayoutParams params = layout.getLayoutParams();
+// Changes the height and width to the specified *pixels*
+                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
+
+                params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                layout.setLayoutParams(params);
+
+
+
+            }
             mTvCategoryImg=(ImageView)itemView.findViewById(R.id.iv_adapter_image);
             mTvCategoryText=(TextView)itemView.findViewById(R.id.iv_adapter_text);
             CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);

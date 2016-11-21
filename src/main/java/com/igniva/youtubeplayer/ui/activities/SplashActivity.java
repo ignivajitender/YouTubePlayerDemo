@@ -151,6 +151,8 @@ public class SplashActivity extends AppCompatActivity {
 
             Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class).putExtra(Constants.ALL_DATA,(Serializable) mAllData).putExtra(Constants.ALL_IMAGES,(Serializable) mAllImages);
             startActivity(mainIntent);
+            overridePendingTransition(R.anim.right_in, R.anim.right_out);
+
             finish();
 
         }

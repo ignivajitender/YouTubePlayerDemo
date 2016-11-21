@@ -379,6 +379,11 @@ ProgressDialog prog;
                             @Override
                             public void onLoadFailed(Exception e, Drawable errorDrawable) {
                                 super.onLoadFailed(e, errorDrawable);
+                                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.no_preview);
+
+                                imageView.setImage(ImageSource.bitmap(largeIcon));
+
+
                                 Toast.makeText(context, "Image loading failed", Toast.LENGTH_SHORT).show();
 
                             }

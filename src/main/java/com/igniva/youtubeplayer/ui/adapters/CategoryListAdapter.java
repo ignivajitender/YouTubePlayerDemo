@@ -120,7 +120,7 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
 // Gets the layout params that will allow you to resize the layout
                 ViewGroup.LayoutParams params = layout.getLayoutParams();
 // Changes the height and width to the specified *pixels*
-                params.height = 300;
+                params.height = (int) mContext.getResources().getInteger(R.integer.grid_row_height);
                 params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
                 layout.setLayoutParams(params);
 
@@ -132,7 +132,8 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
 // Gets the layout params that will allow you to resize the layout
                 ViewGroup.LayoutParams params = layout.getLayoutParams();
 // Changes the height and width to the specified *pixels*
-                params.height = 600;
+                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
+
                 params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
                 layout.setLayoutParams(params);
 
@@ -204,64 +205,67 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
                 public void onClick(View v) {
 
 
-    if (mListFavourite.get(position).equals("0")) {
-        holder.mIvFavourite.setImageResource(R.drawable.star_golden);
-//                        Toast.makeText(mContext, "clicklistener", Toast.LENGTH_SHORT).show();
-        db.updateContact(new DataYoutubePojo(mListCategories.get(position), "1"));
-        mListFavourite.set(position, "1");
-    } else {
-      holder.mIvFavourite.setImageResource(R.drawable.star_grey);
-        db.updateContact(new DataYoutubePojo(mListCategories.get(position), "0"));
-        mListFavourite.set(position, "0 ");
+                    if (mListFavourite.get(position).equals("0")) {
+                        holder.mIvFavourite.setImageResource(R.drawable.star_golden);
+                //                        Toast.makeText(mContext, "clicklistener", Toast.LENGTH_SHORT).show();
+                        db.updateContact(new DataYoutubePojo(mListCategories.get(position), "1"));
 
-        if(UtilsUI.favourite_status) {
-                    clear();
-       Log.d("Reading: ", "Reading all contacts..");
-            contacts = db.getAllContacts();
+                        mListFavourite.set(position, "1");
 
-            for (DataYoutubePojo cn : contacts) {
-                String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
-                        " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
-                        " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+                        updateAdapter();
+                    } else {
+                      holder.mIvFavourite.setImageResource(R.drawable.star_grey);
+                        db.updateContact(new DataYoutubePojo(mListCategories.get(position), "0"));
+                        mListFavourite.set(position, "0 ");
+                        updateAdapter();
+                        if(UtilsUI.favourite_status) {
+                                    clear();
+                       Log.d("Reading: ", "Reading all contacts..");
+                            contacts = db.getAllContacts();
 
-                if (cn.getVideo_favourite().equals("1")) {
-                    mListCategories.add(cn.getVideo_id().toString());
-                    mListNames.add(cn.getVideo_title().toString());
-                    mListDuration.add(cn.getVideo_duration().toString());
-                    mListRating.add(""+cn.getVideo_rating());
-                    mListFavourite.add(cn.getVideo_favourite());
+                            for (DataYoutubePojo cn : contacts) {
+                                String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+                                        " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+                                        " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+
+                                if (cn.getVideo_favourite().equals("1")) {
+                                    mListCategories.add(cn.getVideo_id().toString());
+                                    mListNames.add(cn.getVideo_title().toString());
+                                    mListDuration.add(cn.getVideo_duration().toString());
+                                    mListRating.add(""+cn.getVideo_rating());
+                                    mListFavourite.add(cn.getVideo_favourite());
+                                }
+
+                                Log.e("Name: ", log);
+
+                            }
+
+
+
+                            CategoriesFragment.listCategories = mListCategories;
+                            CategoriesFragment.listNames = mListNames;
+                            CategoriesFragment.listDuration = mListDuration;
+                            CategoriesFragment.listRating = mListRating;
+                            CategoriesFragment.listFavourite = mListFavourite;
+                            try {
+
+
+
+                                int no = sharedPreferences.getInt("cat", 2);
+                                CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(mContext, mListCategories, mListNames, mListDuration, mListRating, mListFavourite,no));
+
+
+                            } catch (InitializationException e) {
+                                e.printStackTrace();
+                            }
+
+                            MainActivity.toolbar.setTitle("Favourite");
+
+                        }
+
                 }
 
-                Log.e("Name: ", log);
-
-            }
-
-
-
-            CategoriesFragment.listCategories = mListCategories;
-            CategoriesFragment.listNames = mListNames;
-            CategoriesFragment.listDuration = mListDuration;
-            CategoriesFragment.listRating = mListRating;
-            CategoriesFragment.listFavourite = mListFavourite;
-            try {
-
-
-
-                int no = sharedPreferences.getInt("cat", 2);
-                CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(mContext, mListCategories, mListNames, mListDuration, mListRating, mListFavourite,no));
-
-
-            } catch (InitializationException e) {
-                e.printStackTrace();
-            }
-
-            MainActivity.toolbar.setTitle("Favourite");
-
-        }
-
-    }
-
-}
+               }
             });
 
 
@@ -321,6 +325,33 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
         return position;
     }
 
+    public void updateAdapter(){
+        final DatabaseHandler db = new DatabaseHandler(mContext);
+        contacts = db.getAllContacts();
+
+        clear();
+        for (DataYoutubePojo cn : contacts) {
+            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+
+            mListCategories.add(cn.getVideo_id().toString());
+            mListNames.add(cn.getVideo_title().toString());
+            mListDuration.add(cn.getVideo_duration().toString());
+            mListRating.add(""+cn.getVideo_rating());
+            mListFavourite.add(cn.getVideo_favourite());
+
+
+            // Writing Contacts to log
+            Log.e("Name: ", log);
+
+        }
+
+
+    //    notifyDataSetChanged();
+
+
+    }
 
 }
 
