@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_category_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/rv_outer_margin"
+    android:layout_gravity="center"
+    app:cardElevation="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:id="@+id/iv_image_layout">
+
+
+    <ImageView
+        android:id="@+id/iv_category_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#ffffff"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center|left"
+    android:background="@android:color/transparent"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:orientation="horizontal"
+    android:id="@+id/linearLayout">
+    <TextView
+        android:id="@+id/tv_category_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="duration"
+        android:textColor="#ffffff"
+        android:background="@android:color/transparent"
+        android:layout_weight=".50"
+        android:paddingLeft="10dp"
+        />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".50"
+        android:gravity="right"
+    >
+
+    </LinearLayout>
+
+</LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_star_favourite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/star_grey"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        />
+
+
+    <ImageView
+        android:id="@+id/iv_share_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/share"
+        android:background="@android:color/transparent"
+        android:layout_weight=".10"
+        android:paddingBottom="10dp"
+        android:paddingRight="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+
+
+</RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_category_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="songs"
+                android:layout_weight=".90"
+                android:background="@android:color/transparent"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:rating="3"
+                android:paddingLeft="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>

@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.igniva.youtubeplayer"
+        minSdkVersion 21
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile files('libs/ytsdk_4_3_S.jar')
+    compile files('libs/StartAppInApp-3.2.2.jar')
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile('com.mikepenz:aboutlibraries:5.2.1@aar') { transitive = true; }
+    compile('com.mikepenz:materialdrawer:4.6.1@aar') { transitive = true; }
+    android {
+        useLibrary 'org.apache.http.legacy'
+    }
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
+    compile 'com.google.android.gms:play-services-ads:9.2.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.afollestad.material-dialogs:core:0.8.6.2'
+    compile 'com.mikepenz:google-material-typeface:1.2.0.1@aar'
+    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.5.0'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'com.google.android.gms:play-services-appindexing:9.2.1'
+    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
+    compile 'jp.wasabeef:glide-transformations:2.0.0'
+    compile 'com.alexvasilkov:gesture-views:2.1.1'
+//    compile 'com.pnikosis:materialish-progress:1.7'
+
+
+}

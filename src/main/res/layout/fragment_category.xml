@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_categories"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btn_view_al_ad"
+
+        android:scrollbars="none" />
+    <com.igniva.youtubeplayer.libs.FloatingActionMenu
+        android:id="@+id/menu_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_backgroundColor="#00ffffff"
+        fab:menu_fab_label=""
+        fab:menu_colorNormal="@color/colorPrimaryDark">
+
+        <com.igniva.youtubeplayer.libs.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_wallpaper_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="Latest "
+            fab:theme="@style/MenuButtonsStyle"
+            />
+
+        <com.igniva.youtubeplayer.libs.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="Top Rated"
+            fab:theme="@style/MenuButtonsStyle"/>
+
+        <com.igniva.youtubeplayer.libs.FloatingActionButton
+            android:id="@+id/fab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_screen_share_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="Favourites"
+            fab:theme="@style/MenuButtonsStyle"/>
+
+    </com.igniva.youtubeplayer.libs.FloatingActionMenu>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="25dp"
+        android:text="No data found!"
+        android:id="@+id/iv_message"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:textColor="@color/colorPrimary"
+        />
+
+</RelativeLayout>

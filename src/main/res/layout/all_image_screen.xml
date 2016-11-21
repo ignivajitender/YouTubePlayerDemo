@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+
+<android.support.v4.view.ViewPager
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/img"
+    />
+
+
+    <com.igniva.youtubeplayer.libs.FloatingActionMenu
+        android:id="@+id/menu_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_backgroundColor="#00ffffff"
+        fab:menu_fab_label=""
+        fab:menu_colorNormal="@color/colorPrimaryDark">
+
+        <com.igniva.youtubeplayer.libs.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_wallpaper_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="Change Background"
+            fab:theme="@style/MenuButtonsStyle"
+            />
+
+        <com.igniva.youtubeplayer.libs.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="Save"
+            fab:theme="@style/MenuButtonsStyle"/>
+
+        <com.igniva.youtubeplayer.libs.FloatingActionButton
+            android:id="@+id/fab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_screen_share_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_label="Share"
+            fab:theme="@style/MenuButtonsStyle"/>
+
+    </com.igniva.youtubeplayer.libs.FloatingActionMenu>
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@android:style/Widget.Material.ProgressBar.Small.Title"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/progressBar"
+        android:visibility="visible"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        app:cpv_animAutostart="true"
+        app:cpv_indeterminate="true"
+        fab:cpv_color="@color/colorPrimaryDark"
+        android:background="@android:color/transparent"/>
+
+</RelativeLayout>
