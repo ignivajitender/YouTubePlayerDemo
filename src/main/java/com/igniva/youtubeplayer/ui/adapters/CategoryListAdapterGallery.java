@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,14 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.ui.activities.All_Image_View;
 
@@ -47,10 +44,8 @@ public static   Bitmap bitmap2;
     public CategoryListAdapterGallery(Context context, List<String> listCategories,int i) {
         this.mImageUrl.clear();
         this.mImageUrl=listCategories;
-//            this.mImageName=listCategories;
         this.i=i;
         this.mContext = context;
-//         db = SQLiteDatabase.openOrCreateDatabase("YouTubeDB", null);
     }
 
 
@@ -62,29 +57,18 @@ public static   Bitmap bitmap2;
 
             mTvCategoryImg=(ImageView)itemView.findViewById(R.id.iv_adapter_image);
 
-            if(i==1)
-            {
-                // Gets linearlayout
-                CardView layout = (CardView)itemView.findViewById(R.id.cv_category_main);
-// Gets the layout params that will allow you to resize the layout
-                ViewGroup.LayoutParams params = layout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
-                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
-                params.width = CardView.LayoutParams.MATCH_PARENT;
-                layout.setLayoutParams(params);
-            }
-            else
-            {
-                // Gets linearlayout
-                CardView layout = (CardView)itemView.findViewById(R.id.cv_category_main);
-// Gets the layout params that will allow you to resize the layout
-                ViewGroup.LayoutParams params = layout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
-                params.height = (int) mContext.getResources().getInteger(R.integer.grid_row_height);
-                params.width = CardView.LayoutParams.MATCH_PARENT;
-                layout.setLayoutParams(params);
+//            if(i==1)
+//            {
+//                // Gets linearlayout
+//                CardView layout = (CardView)itemView.findViewById(R.id.cv_category_main);
+//// Gets the layout params that will allow you to resize the layout
+//                ViewGroup.LayoutParams params = layout.getLayoutParams();
+//// Changes the height and width to the specified *pixels*
+//                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
+//                params.width = CardView.LayoutParams.MATCH_PARENT;
+//                layout.setLayoutParams(params);
+//            }
 
-            }
         }
     }
 
@@ -121,7 +105,7 @@ public static   Bitmap bitmap2;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_image, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_gallery, parent, false);
         ViewHolder vhItem = new ViewHolder(v);
         return vhItem;
     }

@@ -13,8 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
 import com.igniva.youtubeplayer.libs.FloatingActionMenu;
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
@@ -22,8 +24,6 @@ import com.igniva.youtubeplayer.ui.activities.MainActivity;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
-import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterChannels;
-import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterGallery;
 import com.igniva.youtubeplayer.utils.UtilsUI;
 
 import java.util.ArrayList;
@@ -31,24 +31,24 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import yt.sdk.access.InitializationException;
-
 /**
  * Created by igniva-php-08 on 18/5/16.
  */
-public class CategoriesFragment extends BaseFragment implements FloatingActionMenu.OnMenuToggleListener{
+public class CategoriesFragment extends BaseFragment implements FloatingActionMenu.OnMenuToggleListener {
     View mView;
     public static RecyclerView mRvCategories;
-    private Menu menu;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     ArrayList<String> small_images_url, medium_images_url, large_images_url;
     List<DataYoutubePojo> mAllData;
     public static TextView message;
+    public static RelativeLayout no_data_found_layout;
+
+
+
     public static ArrayList<String> channels_name, channel_thumb, listCategories, listDuration, listNames, listRating, listFavourite;
 
-     public static FloatingActionMenu menu_fab;
-     FloatingActionButton fab1,fab2,fab3;
+    public static FloatingActionMenu menu_fab;
+    FloatingActionButton fab1, fab2, fab3;
     MainActivity main = new MainActivity();
     List<DataGalleryPojo> mAllImages = main.getMyImages();
 
@@ -61,9 +61,9 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_category, container, false);
-        setHasOptionsMenu(true);
 
         MainActivity activity = (MainActivity) getActivity();
+
         mAllData = activity.getMyData();
 
         for (DataYoutubePojo cn : mAllData) {
@@ -77,7 +77,6 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
 
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        editor = sharedPreferences.edit();
 
         channels_name = new ArrayList<>();
         channel_thumb = new ArrayList<>();
@@ -94,27 +93,34 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
 
         // Reading all contacts
 
-        message = (TextView)mView.findViewById(R.id.iv_message);
+        message = (TextView) mView.findViewById(R.id.iv_message);
+        no_data_found_layout = (RelativeLayout)mView.findViewById(R.id.no_data_found_layout);
 
         fetchLatestVideos();
+
+        final DatabaseHandler db = new DatabaseHandler(getActivity());
+
 
         fab1 = (FloatingActionButton) mView.findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) mView.findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) mView.findViewById(R.id.fab3);
         menu_fab = (FloatingActionMenu) mView.findViewById(R.id.menu_red);
 
-      menu_fab.setOnMenuToggleListener(this);
+        menu_fab.setAnimated(false);
+
+        menu_fab.setOnMenuToggleListener(this);
 
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                // Reading all contacts
+                hideShowLayout(View.GONE);
                 clear();
+
+                mAllData = db.getAllContacts();
+
                 fetchLatestVideos();
 
-                 setUpLayouts();
 
                 MainActivity.toolbar.setTitle("Latest Videos");
             }
@@ -123,9 +129,13 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoriesFragment.message.setVisibility(View.INVISIBLE);
+                hideShowLayout(View.GONE);
+
+                CategoriesFragment.no_data_found_layout.setVisibility(View.INVISIBLE);
 
                 clear();
+
+                mAllData = db.getAllContacts();
                 Collections.sort(mAllData, new Comparator<DataYoutubePojo>() {
                     @Override
                     public int compare(DataYoutubePojo c1, DataYoutubePojo c2) {
@@ -143,35 +153,18 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
                     listCategories.add(cn.getVideo_id().toString());
                     listNames.add(cn.getVideo_title().toString());
                     listDuration.add(cn.getVideo_duration().toString());
-                    listRating.add(""+cn.getVideo_rating());
+                    listRating.add("" + cn.getVideo_rating());
                     listFavourite.add(cn.getVideo_favourite());
 
-                    // Writing Contacts to log
-//                            Log.e("Name: ", log);
 
                 }
-                if(listCategories.size() == 0){
-                    CategoriesFragment.message.setVisibility(View.VISIBLE);;
+                if (listCategories.size() == 0) {
+                    CategoriesFragment.no_data_found_layout.setVisibility(View.VISIBLE);
+                    ;
                 }
 
-                CategoriesFragment.listCategories = listCategories;
-                CategoriesFragment.listNames = listNames;
-                CategoriesFragment.listDuration = listDuration;
-                CategoriesFragment.listRating = listRating;
-                CategoriesFragment.listFavourite = listFavourite;
-                try {
-                    int no = sharedPreferences.getInt("cat", 2);
 
-
-                        mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), listCategories, listNames, listDuration, listRating, listFavourite, no));
-                        mRvCategories.setHasFixedSize(true);
-                        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), no);
-                        mRvCategories.setLayoutManager(mLayoutManager);
-
-
-                } catch (InitializationException e) {
-                    e.printStackTrace();
-                }
+                setUpLayouts();
                 MainActivity.toolbar.setTitle("Top Rated");
             }
         });
@@ -179,9 +172,18 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                message.setVisibility(View.INVISIBLE);
+                hideShowLayout(View.GONE);
+
+                UtilsUI.favourite_status = true;
+
+                no_data_found_layout.setVisibility(View.INVISIBLE);
+
                 clear();
+
+                mAllData = db.getAllContacts();
+
                 for (DataYoutubePojo cn : mAllData) {
+
                     String log = "video_Id_favourite: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
                             " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
                             " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
@@ -190,42 +192,26 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
                         listCategories.add(cn.getVideo_id().toString());
                         listNames.add(cn.getVideo_title().toString());
                         listDuration.add(cn.getVideo_duration().toString());
-                        listRating.add(""+cn.getVideo_rating());
+                        listRating.add("" + cn.getVideo_rating());
                         listFavourite.add(cn.getVideo_favourite());
                     }
 
-                // Writing Contacts to log
+                    // Writing Contacts to log
                     Log.e("Name: ", log);
 
                 }
-                if(listCategories.size() == 0){
-                    CategoriesFragment.message.setVisibility(View.VISIBLE);;
+                if (listCategories.size() == 0) {
+                    CategoriesFragment.no_data_found_layout.setVisibility(View.VISIBLE);
+                    ;
                 }
 
-                CategoriesFragment.listCategories = listCategories;
-                CategoriesFragment.listNames = listNames;
-                CategoriesFragment.listDuration = listDuration;
-                CategoriesFragment.listRating = listRating;
-                CategoriesFragment.listFavourite = listFavourite;
-                try {
-                    int no = sharedPreferences.getInt("cat", 2);
+                 setUpLayouts();
 
-
-                        mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), listCategories, listNames, listDuration, listRating, listFavourite, no));
-                        mRvCategories.setHasFixedSize(true);
-                        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), no);
-                        mRvCategories.setLayoutManager(mLayoutManager);
-
-
-                } catch (InitializationException e) {
-                    e.printStackTrace();
-                }
 
                 MainActivity.toolbar.setTitle("Favourite");
             }
         });
 
-        setUpLayouts();
         return mView;
     }
 
@@ -233,285 +219,36 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
     public void setUpLayouts() {
 
         mRvCategories = (RecyclerView) mView.findViewById(R.id.rv_categories);
-//        getCategoriesData(2);
         try {
-
-            int no = sharedPreferences.getInt("cat", 2);
-
             CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-
-
-                mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), listCategories, listNames, listDuration, listRating, listFavourite, no));
-
-                mRvCategories.setHasFixedSize(true);
-                GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), no);
-                mRvCategories.setLayoutManager(mLayoutManager);
-
-
+            mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), listCategories, listNames, listDuration, listRating, listFavourite, 1));
+            mRvCategories.setHasFixedSize(true);
+            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 1);
+            mRvCategories.setLayoutManager(mLayoutManager);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void setDataInViewLayouts() {
     }
 
-    private void getCategoriesDataOfGalary(int pos) {
-        try {
 
-
-            CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-
-            mRvCategories.setAdapter(new CategoryListAdapterGallery(getActivity(), large_images_url, pos));
-            mRvCategories.setHasFixedSize(true);
-            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), pos);
-            mRvCategories.setLayoutManager(mLayoutManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getCategoriesData(int pos) {
-        try {
-            CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-
-            int no = sharedPreferences.getInt("cat", 2);
-
-            mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), listCategories, listNames, listDuration, listRating, listFavourite, no));
-
-            mRvCategories.setHasFixedSize(true);
-            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), no);
-            mRvCategories.setLayoutManager(mLayoutManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getCategoriesDataOfChannels(int pos) {
-        try {
-
-            channel_thumb.clear();
-            channels_name.clear();
-
-            CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-            channels_name.add("Bollywood");
-            channel_thumb.add("http://img.youtube.com/vi/aWMTj-rejvc/hqdefault.jpg");
-            channels_name.add("English");
-            channel_thumb.add("http://img.youtube.com/vi/iS1g8G_njx8/hqdefault.jpg");
-            channels_name.add("Punjabi");
-            channel_thumb.add("http://img.youtube.com/vi/ojAIYTXU7ZI/hqdefault.jpg");
-            channels_name.add("Coke Studio");
-            channel_thumb.add("http://img.youtube.com/vi/7w8AR7jnhpc/hqdefault.jpg");
-
-            int no = sharedPreferences.getInt("cat", 2);
-            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(getActivity(), channels_name, channel_thumb,no));
-//
-            MainActivity.toolbar.setTitle("Channels");
-            mRvCategories.setHasFixedSize(true);
-            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), pos);
-            mRvCategories.setLayoutManager(mLayoutManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
-        this.menu = menu;
-
-        if (sharedPreferences.getInt("cat", 2) == 2) {
-            menu.getItem(0).setTitle(getResources().getString(R.string.list));
-            getCategoriesData(1);
-            editor.putInt("cat", 1);
-            editor.commit();
-        } else {
-            menu.getItem(0).setTitle(getResources().getString(R.string.grid));
-
-            getCategoriesData(2);
-            editor.putInt("cat", 2);
-            editor.commit();
-        }
-
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+        super.onCreateOptionsMenu(menu,inflater);
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        menu_fab.close(true);
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-
-                CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-
-                if (menu.getItem(0).getTitle().equals(getResources().getString(R.string.grid))) {
-                    menu.getItem(0).setIcon(getResources().getDrawable(R.mipmap.list));
-                    menu.getItem(0).setTitle(getResources().getString(R.string.list));
-
-                    if (UtilsUI.galery_status) {
-
-                        getCategoriesDataOfGalary(2);
-                    } else if (UtilsUI.channels_status) {
-
-                        getCategoriesDataOfChannels(2);
-                    } else {
-                        getCategoriesData(2);
-                    }
-                    int cat = 1;
-                    editor.putInt("cat", cat);
-                    editor.commit();
-                } else {
-                    menu.getItem(0).setIcon(getResources().getDrawable(R.mipmap.grid));
-                    menu.getItem(0).setTitle(getResources().getString(R.string.grid));
-                    if (UtilsUI.galery_status) {
-                        getCategoriesDataOfGalary(1);
-                    } else if (UtilsUI.channels_status) {
-                        getCategoriesDataOfChannels(1);
-                    } else {
-                        getCategoriesData(1);
-                    }
-                    int cat = 2;
-                    editor.putInt("cat", cat);
-                    editor.commit();
-                }
-                break;
-
-        }
         return false;
-
-
-    }
-
-//    private class CategoryListAdapterGallery  extends RecyclerView.Adapter<CategoryListAdapterGallery.ViewHolder> {
-//
-//        List<String> mImageUrl;
-//        List<String> mImageName;
-//        Context mContext;
-//        SQLiteDatabase db;
-//        int i;
-//
-//        public CategoryListAdapterGallery(Context context, List<String> listCategories,int i) {
-//            this.mImageUrl=listCategories;
-////            this.mImageName=listCategories;
-//this.i=i;
-//            this.mContext = context;
-//
-////         db = SQLiteDatabase.openOrCreateDatabase("YouTubeDB", null);
-//        }
-//
-//
-//        public class ViewHolder extends RecyclerView.ViewHolder {
-//            ImageView mTvCategoryImg;
-//
-//            public ViewHolder(View itemView) {
-//                super(itemView);
-//
-//                mTvCategoryImg=(ImageView)itemView.findViewById(R.id.iv_adapter_image);
-//
-//if(i==1)
-//{
-//                // Gets linearlayout
-//                CardView layout = (CardView)itemView.findViewById(R.id.cv_category_main);
-//// Gets the layout params that will allow you to resize the layout
-//                ViewGroup.LayoutParams params = layout.getLayoutParams();
-//// Changes the height and width to the specified *pixels*
-//                params.height = 700;
-//                params.width = CardView.LayoutParams.MATCH_PARENT;
-//                layout.setLayoutParams(params);
-//            }
-//                else
-//{
-//    // Gets linearlayout
-//    CardView layout = (CardView)itemView.findViewById(R.id.cv_category_main);
-//// Gets the layout params that will allow you to resize the layout
-//    ViewGroup.LayoutParams params = layout.getLayoutParams();
-//// Changes the height and width to the specified *pixels*
-//    params.height = 220;
-//    params.width = CardView.LayoutParams.MATCH_PARENT;
-//    layout.setLayoutParams(params);
-//
-//}
-//            }
-//        }
-//
-//
-//
-//        @Override
-//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_image, parent, false);
-//            ViewHolder vhItem = new ViewHolder(v);
-//            return vhItem;
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(final ViewHolder holder, final int position) {
-//            try {
-//
-////
-//
-//
-//
-//
-//
-//
-////
-////                Picasso.with(mContext)
-////                        .load(mImageUrl.get(position))
-////                        .fit()
-////                        .into(holder.mTvCategoryImg);
-//
-//
-//                Glide.with(mContext).load(mImageUrl.get(position))
-//                        .thumbnail(0.5f)
-//                        .crossFade()
-//                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                        .into(holder.mTvCategoryImg);
-//
-//
-//
-//                holder.mTvCategoryImg.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        Intent intent=new Intent(getActivity(),All_Image_View.class);
-//                        intent.putExtra("array", (Serializable) mImageUrl);
-//                        intent.putExtra("position",position);
-//                        startActivity(intent);
-//
-//
-//
-//                    }
-//                });
-//
-//
-//
-//            }catch (Exception e){
-//                e.printStackTrace();
-//                Log.e("Exception",""+e);
-//
-//            }
-//        }
-//
-//        @Override
-//        public int getItemCount() {//return array.size
-//            return mImageUrl.size();
-//        }
-//
-//        @Override
-//        public int getItemViewType(int position) {
-//            return position;
-//        }
-//
-//
-//    }
-
-    private static void clear() {
-
+}
+    private  void clear() {
+        mAllData .clear();
         channel_thumb.clear();
         channels_name.clear();
 
@@ -527,7 +264,7 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
         CategoriesFragment.listRating.clear();
         CategoriesFragment.listFavourite.clear();
 
-        CategoriesFragment.message.setVisibility(View.INVISIBLE);
+        CategoriesFragment.no_data_found_layout.setVisibility(View.INVISIBLE);
 
         menu_fab.close(true);
 
@@ -556,12 +293,10 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
 
         for (DataGalleryPojo cn : mAllImages) {
 
-
             large_images_url.add(cn.getImage_link().toString());
 
-
         }
-
+        setUpLayouts();
 
     }
 
@@ -570,13 +305,19 @@ public class CategoriesFragment extends BaseFragment implements FloatingActionMe
 
         if(opened){
 
-            menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.fab_add));
+            menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_clear_white_24dp));
 
         }else {
 
             menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_nav_filter));
 
         }
+
+    }
+
+    public static void hideShowLayout(int visibility){
+
+        no_data_found_layout.setVisibility(visibility);
 
     }
 }

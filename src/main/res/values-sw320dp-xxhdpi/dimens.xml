@@ -24,15 +24,20 @@
     <dimen name="dp6">6dp</dimen>
     <dimen name="dp5">5dp</dimen>
     <dimen name="dp_56">56dp</dimen>
-
     <dimen name="dp_13">13dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_68">68dp</dimen>
-    <dimen name="dp_250">250dp</dimen>
+
     <dimen name="dp_46">46dp</dimen>
 
-    <integer name="list_row_height">750</integer>
+    <integer name="list_row_height">900</integer>
     <integer name="grid_row_height">450</integer>
     <dimen name="icon_size">35dp</dimen>
+    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_250">450dp</dimen>
+    <dimen name="dp_14">18sp</dimen>
+    <dimen name="dp_200">400dp</dimen>
 
 </resources>

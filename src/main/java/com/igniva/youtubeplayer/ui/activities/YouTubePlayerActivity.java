@@ -149,7 +149,6 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
             orientationEnum = OrientationEnum.AUTO;
 
 
-
 //        showAudioUi = getIntent().getBooleanExtra(EXTRA_SHOW_AUDIO_UI, true);
 
         showAudioUi=sharedPreferences.getBoolean("showAudioUi",true);

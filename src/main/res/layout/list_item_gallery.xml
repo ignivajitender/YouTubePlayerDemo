@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dp_3"
+    android:layout_marginRight="@dimen/dp_3"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/cv_category_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#888888"
+        android:orientation="vertical"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp"
+        android:layout_marginTop="@dimen/dp_15"
+        app:cardMaxElevation="10dp"
+        app:cardPreventCornerOverlap="false">
+
+        <ImageView
+            android:layout_height="@dimen/dp_250"
+            android:id="@+id/iv_adapter_image"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            android:transitionName="transition" />
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

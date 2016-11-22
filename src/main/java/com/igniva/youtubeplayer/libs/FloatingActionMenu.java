@@ -632,10 +632,12 @@ public class FloatingActionMenu extends ViewGroup {
           //  mIcon = getResources().getDrawable(R.drawable.ic_clear_white_24dp);
 
 
+            if(animate) {
                 if (isBackgroundEnabled()) {
                     mShowBackgroundAnimator.start();
                 }
 
+            }
                 if (mIconAnimated) {
                     if (mIconToggleSet != null) {
                         mIconToggleSet.start();
@@ -644,6 +646,7 @@ public class FloatingActionMenu extends ViewGroup {
                         mOpenAnimatorSet.start();
                     }
                 }
+
 
                 int delay = 0;
                 int counter = 0;
@@ -690,18 +693,22 @@ public class FloatingActionMenu extends ViewGroup {
 
     public void close(final boolean animate) {
         if (isOpened()) {
-            if (isBackgroundEnabled()) {
-                mHideBackgroundAnimator.start();
-            }
 
-            if (mIconAnimated) {
-                if (mIconToggleSet != null) {
-                    mIconToggleSet.start();
-                } else {
-                    mCloseAnimatorSet.start();
-                    mOpenAnimatorSet.cancel();
+            if(animate) {
+
+                if (isBackgroundEnabled()) {
+                    mHideBackgroundAnimator.start();
                 }
             }
+                if (mIconAnimated) {
+                    if (mIconToggleSet != null) {
+                        mIconToggleSet.start();
+                    } else {
+                        mCloseAnimatorSet.start();
+                        mOpenAnimatorSet.cancel();
+                    }
+                }
+
 
             int delay = 0;
             int counter = 0;

@@ -27,12 +27,16 @@
     <dimen name="dp_15">15dp</dimen>
     <dimen name="dp_11">11dp</dimen>
 
-    <integer name="list_row_height">800</integer>
+
+    <integer name="list_row_height">900</integer>
     <integer name="grid_row_height">450</integer>
     <dimen name="icon_size">40dp</dimen>
-
-
-
+    <dimen name="dp_35">35dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_250">250dp</dimen>
+    <dimen name="dp_14">14sp</dimen>
+    <dimen name="dp_200">200dp</dimen>
 
 
 </resources>

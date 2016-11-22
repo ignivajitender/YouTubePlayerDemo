@@ -60,16 +60,29 @@
             fab:theme="@style/MenuButtonsStyle"/>
 
     </com.igniva.youtubeplayer.libs.FloatingActionMenu>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_data_found_layout"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_data_found"
+            android:id="@+id/no_data_found_image"
+            android:layout_centerInParent="true"/>
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textSize="25dp"
+        android:layout_centerHorizontal="true"
         android:text="No data found!"
         android:id="@+id/iv_message"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
+        android:layout_below="@+id/no_data_found_image"
         android:textColor="@color/colorPrimary"
         />
-
+    </RelativeLayout>
 </RelativeLayout>

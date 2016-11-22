@@ -1,8 +1,6 @@
 package com.igniva.youtubeplayer.utils;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +16,6 @@ import android.view.View;
 
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
-import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterChannels;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterGallery;
@@ -26,7 +23,6 @@ import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.ui.activities.YouTubeActivity;
-import com.igniva.youtubeplayer.ui.fragments.ChannelsFragment;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -38,9 +34,6 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import yt.sdk.access.InitializationException;
@@ -133,34 +126,35 @@ public class UtilsUI {
         drawerBuilder.addDrawerItems(
                 new PrimaryDrawerItem().withName("Videos").withIcon(R.drawable.ic_new_releases_black_24dp).withIdentifier(1),
                 new PrimaryDrawerItem().withName("Gallery").withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
-//                    new DividerDrawerItem(),
-                new PrimaryDrawerItem().withName("Channels").withIcon(R.drawable.channels).withIdentifier(3),
 
-                new PrimaryDrawerItem().withName("Favourite").withIcon(R.drawable.ic_favorite_black_24dp).withIdentifier(4),
+                new PrimaryDrawerItem().withName("Favourite").withIcon(R.drawable.ic_favorite_black_24dp).withIdentifier(3),
 
               //  new PrimaryDrawerItem().withName("Gallery").withIcon(R.drawable.ic_menu_gallery).withIdentifier(5),
 
                 new DividerDrawerItem(),
 
-                new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.ic_settings_black_24dp).withSelectable(false).withIdentifier(5),
+                new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.ic_settings_black_24dp).withSelectable(false).withIdentifier(4),
 
-                new SecondaryDrawerItem().withName("Rate Us").withIcon(R.drawable.top_rated).withSelectable(false).withIdentifier(6),
+                new SecondaryDrawerItem().withName("Rate Us").withIcon(R.drawable.top_rated).withSelectable(false).withIdentifier(5),
 
-                new SecondaryDrawerItem().withName("More Free Apps").withIcon(R.drawable.ic_menu_send).withSelectable(false).withIdentifier(7),
+                new SecondaryDrawerItem().withName("More Free Apps").withIcon(R.drawable.ic_menu_send).withSelectable(false).withIdentifier(6),
 
-                new SecondaryDrawerItem().withName("Share").withIcon(R.drawable.ic_menu_share).withSelectable(false).withIdentifier(8));
+                new SecondaryDrawerItem().withName("Share").withIcon(R.drawable.ic_menu_share).withSelectable(false).withIdentifier(7));
 
 
         drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
 
-                CategoriesFragment.message.setVisibility(View.INVISIBLE);
+                CategoriesFragment.hideShowLayout(View.GONE);
 
                 CategoriesFragment.menu_fab.close(true);
 
                 switch (iDrawerItem.getIdentifier()) {
                     case 1:
+
+                        CategoriesFragment.hideShowLayout(View.GONE);
+
                         clear();
                         favourite_status = false;
                         galery_status = false;
@@ -193,28 +187,23 @@ public class UtilsUI {
                         CategoriesFragment.listDuration = listDuration;
                         CategoriesFragment.listRating = listRating;
                         CategoriesFragment.listFavourite = listFavourite;
-                        try {
 
-                                int no = sharedPreferences.getInt("cat", 2);
-                            if(no == 1) {
-                                CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(context, listCategories, listNames, listDuration, listRating, listFavourite, 2));
-                                CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                                GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2);
-                                CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                            }else {
-                                CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(context, listCategories, listNames, listDuration, listRating, listFavourite, 1));
-                                CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                                GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
-                                CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
+
+
+                            try {
+
+                                setUpGridLayout(context);
+
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
 
-                        } catch (InitializationException e) {
-                            e.printStackTrace();
-                        }
 
                         MainActivity.toolbar.setTitle("Latest Videos");
                         break;
                     case 2:
+                        CategoriesFragment.hideShowLayout(View.GONE);
+
                         favourite_status = false;
                         favourite_status = false;
                         channels_status = false;
@@ -243,53 +232,19 @@ public class UtilsUI {
                         }
 
 
-                        if(no == 1) {
-                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterGallery(context, large_images_url, 2));
-                            CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2);
-                            CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                        }else {
                             CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterGallery(context, large_images_url, 1));
                             CategoriesFragment.mRvCategories.setHasFixedSize(true);
                             GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
                             CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                        }
+
                         MainActivity.toolbar.setTitle("Gallery");
                         break;
 
+
                     case 3:
-                        clear();
-                        favourite_status = false;
-                        galery_status = false;
-                        channels_status = true;
 
-                        CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-                        channels_name.add("Bollywood");
-                        channel_thumb.add("http://img.youtube.com/vi/aWMTj-rejvc/hqdefault.jpg");
-                        channels_name.add("English");
-                        channel_thumb.add("http://img.youtube.com/vi/iS1g8G_njx8/hqdefault.jpg");
-                        channels_name.add("Punjabi");
-                        channel_thumb.add("http://img.youtube.com/vi/ojAIYTXU7ZI/hqdefault.jpg");
-                        channels_name.add("Coke Studio");
-                        channel_thumb.add("http://img.youtube.com/vi/7w8AR7jnhpc/hqdefault.jpg");
-                        no = sharedPreferences.getInt("cat", 2);
+                        CategoriesFragment.hideShowLayout(View.GONE);
 
-                        if(no == 1) {
-                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(context, channels_name, channel_thumb,2));
-                            CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2);
-                            CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                        }else {
-                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterChannels(context, channels_name, channel_thumb,1));
-                            CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
-                            CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                        }
-//
-                        MainActivity.toolbar.setTitle("Channels");
-
-                        break;
-                    case 4:
                         clear();
                         channels_status = false;
                         favourite_status = true;
@@ -319,7 +274,7 @@ public class UtilsUI {
                         }
 
                         if(listCategories.size() == 0){
-                            CategoriesFragment.message.setVisibility(View.VISIBLE);;
+                            CategoriesFragment.hideShowLayout(View.GONE);
                         }
 
                         CategoriesFragment.listCategories = listCategories;
@@ -327,30 +282,21 @@ public class UtilsUI {
                         CategoriesFragment.listDuration = listDuration;
                         CategoriesFragment.listRating = listRating;
                         CategoriesFragment.listFavourite = listFavourite;
+
                         try {
-                             no = sharedPreferences.getInt("cat", 2);
 
-                             if(no == 1) {
+                            setUpGridLayout(context);
 
-                                 CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(context, listCategories, listNames, listDuration, listRating, listFavourite, 2));
-                                 CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                                 GridLayoutManager mLayoutManager = new GridLayoutManager(context, 2);
-                                 CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                             }else {
-                                 CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(context, listCategories, listNames, listDuration, listRating, listFavourite, 1));
-                                 CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                                 GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
-                                 CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
-                             }
-                        } catch (InitializationException e) {
+                        }catch (Exception e){
                             e.printStackTrace();
                         }
+
 
                         MainActivity.toolbar.setTitle("Favourite");
                         break;
 
 
-                    case 5:
+                    case 4:
                         CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
                         favourite_status = false;
                         channels_status = false;
@@ -362,7 +308,7 @@ public class UtilsUI {
 
                         break;
 
-                    case 6:
+                    case 5:
                         Uri uri = Uri.parse("market://details?id=" + "com.sqwip");
                         Intent rateApp = new Intent(Intent.ACTION_VIEW, uri);
                         // To count with Play market backstack, After pressing back button,
@@ -384,7 +330,7 @@ public class UtilsUI {
                         break;
 
 
-                    case 7:
+                    case 6:
                          uri = Uri.parse("market://search?q=pub:saga");
                         Intent moreFreeApps = new Intent(Intent.ACTION_VIEW, uri);
                         // To count with Play market backstack, After pressing back button,
@@ -405,7 +351,7 @@ public class UtilsUI {
 
                         break;
 
-                    case 8:
+                    case 7:
 
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
@@ -450,5 +396,11 @@ public class UtilsUI {
         CategoriesFragment.listFavourite.clear();
     }
 
+    public static void setUpGridLayout(Context context) throws InitializationException {
+        CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(context, listCategories, listNames, listDuration, listRating, listFavourite, 1));
+        CategoriesFragment.mRvCategories.setHasFixedSize(true);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
+        CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
+    }
 
 }

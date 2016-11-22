@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.android.youtube.player.YouTubePlayer;
@@ -46,13 +45,18 @@ import yt.sdk.access.YTSDK;
 /**
  * Created by igniva-php-08 on 20/5/16.
  */
-public class CategoryListAdapter  extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
+public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
 
-public  static ArrayList<String> mListCategories=new ArrayList<>();;
-    ArrayList<String> mListNames=new ArrayList<>();;
-    ArrayList<String> mListDuration=new ArrayList<>();;
-    ArrayList<String> mListRating=new ArrayList<>();;
-    ArrayList<String> mListFavourite=new ArrayList<>();;
+    public static ArrayList<String> mListCategories = new ArrayList<>();
+    ;
+    ArrayList<String> mListNames = new ArrayList<>();
+    ;
+    ArrayList<String> mListDuration = new ArrayList<>();
+    ;
+    ArrayList<String> mListRating = new ArrayList<>();
+    ;
+    ArrayList<String> mListFavourite = new ArrayList<>();
+    ;
     ;
 
     YTSDK sdk = null;
@@ -61,94 +65,64 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
     Activity activity;
     SQLiteDatabase db;
     static List<DataYoutubePojo> contacts;
-    int mData ;
+    int mData;
     SharedPreferences sharedPreferences;
 
-    public CategoryListAdapter(Context context, ArrayList<String> listCategories,ArrayList<String> listNames,ArrayList<String> listDuration,ArrayList<String> listRating,ArrayList<String> listFavourite ,int data) throws InitializationException {
-        this.mListCategories=listCategories;
-        this.mListNames=listNames;
-        this.mListDuration=listDuration;
-        this.mListRating=listRating;
-        this.mListFavourite=listFavourite;
+    public CategoryListAdapter(Context context, ArrayList<String> listCategories, ArrayList<String> listNames, ArrayList<String> listDuration, ArrayList<String> listRating, ArrayList<String> listFavourite, int data) throws InitializationException {
+        this.mListCategories = listCategories;
+        this.mListNames = listNames;
+        this.mListDuration = listDuration;
+        this.mListRating = listRating;
+        this.mListFavourite = listFavourite;
         this.mContext = context;
 
         this.mData = data;
-//        this.activity=(Activity)context;
 
-//        try {
-//            sdk = YTSDK.getInstance(activity);
-//        }catch (Exception e)
-//            {System.out.println("hlo");}
-        if(mListCategories.size()!=0)
-        {
+        if (mListCategories.size() != 0) {
             CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             CategoriesFragment.mRvCategories.setVisibility(View.GONE);
         }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-//         db = SQLiteDatabase.openOrCreateDatabase("YouTubeDB", null);
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTvCategoryName,mTvCategoryDuration;
+        TextView mTvCategoryName, mTvCategoryDuration;
         CardView mCvMain;
-        ImageView mTvCategoryImg,mIvFavourite,mIvShareIcon,mIvDownloadIcon;
+        ImageView mTvCategoryImg, mIvFavourite, mIvShareIcon, mIvDownloadIcon;
         RatingBar mRatingBar;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            mTvCategoryName=(TextView)itemView.findViewById(R.id.tv_category_name);
-            mCvMain=(CardView)itemView.findViewById(R.id.cv_category_main);
-            mTvCategoryImg=(ImageView)itemView.findViewById(R.id.iv_category_img);
-            mTvCategoryDuration=(TextView)itemView.findViewById(R.id.tv_category_duration);
-            mRatingBar = (RatingBar)itemView.findViewById(R.id.ratingBar);
-            mIvFavourite=(ImageView)itemView.findViewById(R.id.iv_star_favourite);
-            mIvShareIcon=(ImageView)itemView.findViewById(R.id.iv_share_icon);
+            mTvCategoryName = (TextView) itemView.findViewById(R.id.tv_category_name);
+            mCvMain = (CardView) itemView.findViewById(R.id.cv_category_main);
+            mTvCategoryImg = (ImageView) itemView.findViewById(R.id.iv_category_img);
+            mTvCategoryDuration = (TextView) itemView.findViewById(R.id.tv_category_duration);
+            mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
+            mIvFavourite = (ImageView) itemView.findViewById(R.id.iv_star_favourite);
+            mIvShareIcon = (ImageView) itemView.findViewById(R.id.iv_share_icon);
 
-
-
-            if(mData ==2)
-            {
-                // Gets linearlayout
-                RelativeLayout layout = (RelativeLayout)itemView.findViewById(R.id.iv_image_layout);
-// Gets the layout params that will allow you to resize the layout
-                ViewGroup.LayoutParams params = layout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
-                params.height = (int) mContext.getResources().getInteger(R.integer.grid_row_height);
-                params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-                layout.setLayoutParams(params);
-
-            }
-            else
-            {
-                // Gets linearlayout
-                RelativeLayout layout = (RelativeLayout)itemView.findViewById(R.id.iv_image_layout);
-// Gets the layout params that will allow you to resize the layout
-                ViewGroup.LayoutParams params = layout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
-                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
-
-                params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-                layout.setLayoutParams(params);
-
-                mTvCategoryName.setTextSize(20);
-                mTvCategoryDuration.setTextSize(20);
-
-            }
+//            if (mData == 1) {
+//                // Gets linearlayout
+//                RelativeLayout layout = (RelativeLayout) itemView.findViewById(R.id.iv_image_layout);
+//                // Gets the layout params that will allow you to resize the layout
+//                ViewGroup.LayoutParams params = layout.getLayoutParams();
+//                // Changes the height and width to the specified *pixels*
+//                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
+//                params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+//                layout.setLayoutParams(params);
+//            }
         }
     }
 
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_category, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_videos, parent, false);
         ViewHolder vhItem = new ViewHolder(v);
         return vhItem;
     }
@@ -175,12 +149,9 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
 
             holder.mTvCategoryDuration.setText(mListDuration.get(position));
 
-            if(mListFavourite.get(position).equals("0"))
-            {
+            if (mListFavourite.get(position).equals("0")) {
                 holder.mIvFavourite.setImageResource(R.drawable.star_grey);
-            }
-            else
-            {
+            } else {
                 holder.mIvFavourite.setImageResource(R.drawable.star_golden);
             }
 
@@ -189,13 +160,13 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
                 @Override
                 public void onClick(View v) {
 
-                    String link="https://www.youtube.com/watch?v="+mListCategories.get(position);
+                    String link = "https://www.youtube.com/watch?v=" + mListCategories.get(position);
 
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(""+link));
-                    mContext.startActivity(Intent.createChooser(sharingIntent,"Share using"));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("" + link));
+                    mContext.startActivity(Intent.createChooser(sharingIntent, "Share using"));
 
                 }
             });
@@ -207,20 +178,20 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
 
                     if (mListFavourite.get(position).equals("0")) {
                         holder.mIvFavourite.setImageResource(R.drawable.star_golden);
-                //                        Toast.makeText(mContext, "clicklistener", Toast.LENGTH_SHORT).show();
+                        //                        Toast.makeText(mContext, "clicklistener", Toast.LENGTH_SHORT).show();
                         db.updateContact(new DataYoutubePojo(mListCategories.get(position), "1"));
 
                         mListFavourite.set(position, "1");
 
                         updateAdapter();
                     } else {
-                      holder.mIvFavourite.setImageResource(R.drawable.star_grey);
+                        holder.mIvFavourite.setImageResource(R.drawable.star_grey);
                         db.updateContact(new DataYoutubePojo(mListCategories.get(position), "0"));
                         mListFavourite.set(position, "0 ");
                         updateAdapter();
-                        if(UtilsUI.favourite_status) {
-                                    clear();
-                       Log.d("Reading: ", "Reading all contacts..");
+                        if (UtilsUI.favourite_status) {
+                            clear();
+                            Log.d("Reading: ", "Reading all contacts..");
                             contacts = db.getAllContacts();
 
                             for (DataYoutubePojo cn : contacts) {
@@ -232,14 +203,13 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
                                     mListCategories.add(cn.getVideo_id().toString());
                                     mListNames.add(cn.getVideo_title().toString());
                                     mListDuration.add(cn.getVideo_duration().toString());
-                                    mListRating.add(""+cn.getVideo_rating());
+                                    mListRating.add("" + cn.getVideo_rating());
                                     mListFavourite.add(cn.getVideo_favourite());
                                 }
 
                                 Log.e("Name: ", log);
 
                             }
-
 
 
                             CategoriesFragment.listCategories = mListCategories;
@@ -250,10 +220,13 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
                             try {
 
 
-
                                 int no = sharedPreferences.getInt("cat", 2);
-                                CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(mContext, mListCategories, mListNames, mListDuration, mListRating, mListFavourite,no));
 
+                                CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(mContext, mListCategories, mListNames, mListDuration, mListRating, mListFavourite, 1));
+
+                                CategoriesFragment.mRvCategories.setHasFixedSize(true);
+                                GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 1);
+                                CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
 
                             } catch (InitializationException e) {
                                 e.printStackTrace();
@@ -263,9 +236,9 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
 
                         }
 
-                }
+                    }
 
-               }
+                }
             });
 
 
@@ -281,30 +254,20 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
                     intent.putExtra("handle_error", true);
                     intent.putExtra("anim_enter", R.anim.fade_in);
                     intent.putExtra("anim_exit", R.anim.fade_out);
-                    intent.putExtra("index_no",mListCategories.indexOf(mListCategories.get(position)) );
-                    intent.putStringArrayListExtra("mListCategories",mListCategories);
+                    intent.putExtra("index_no", mListCategories.indexOf(mListCategories.get(position)));
+                    intent.putStringArrayListExtra("mListCategories", mListCategories);
 //                    Toast.makeText(mContext, "mListCategories= "+mListCategories.indexOf(mListCategories.get(position)), Toast.LENGTH_SHORT).show();
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Exception",""+e);
+            Log.e("Exception", "" + e);
 
         }
     }
 
-    private void downloadVideo(int position)  throws InitializationException {
-
-
-
-
-//        YTSDK.DownloadFormat.downloadmp4;
-//        sdk.setDownloadFolderPath(String destinationFolder)
-//        sdk.download(activity , mListCategories.get(position));
-
-    }
 
     private void clear() {
 
@@ -325,7 +288,7 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
         return position;
     }
 
-    public void updateAdapter(){
+    public void updateAdapter() {
         final DatabaseHandler db = new DatabaseHandler(mContext);
         contacts = db.getAllContacts();
 
@@ -338,7 +301,7 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
             mListCategories.add(cn.getVideo_id().toString());
             mListNames.add(cn.getVideo_title().toString());
             mListDuration.add(cn.getVideo_duration().toString());
-            mListRating.add(""+cn.getVideo_rating());
+            mListRating.add("" + cn.getVideo_rating());
             mListFavourite.add(cn.getVideo_favourite());
 
 
@@ -346,9 +309,6 @@ public  static ArrayList<String> mListCategories=new ArrayList<>();;
             Log.e("Name: ", log);
 
         }
-
-
-    //    notifyDataSetChanged();
 
 
     }
