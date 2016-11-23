@@ -19,19 +19,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import com.google.android.youtube.player.YouTubePlayer;
 import com.igniva.youtubeplayer.R;
-import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
+import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
-import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
+import com.igniva.youtubeplayer.ui.activities.YouTubePlayerActivity;
+import com.igniva.youtubeplayer.ui.fragments.FavouritesFragment;
 import com.igniva.youtubeplayer.utils.OrientationEnum;
 import com.igniva.youtubeplayer.utils.QualityEnum;
-import com.igniva.youtubeplayer.ui.activities.YouTubePlayerActivity;
 import com.igniva.youtubeplayer.utils.UtilsUI;
 import com.igniva.youtubeplayer.utils.YouTubeThumbnail;
 import com.squareup.picasso.Picasso;
@@ -45,19 +43,19 @@ import yt.sdk.access.YTSDK;
 /**
  * Created by igniva-php-08 on 20/5/16.
  */
-public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
+public class FavouriteListAdapter extends RecyclerView.Adapter<FavouriteListAdapter.ViewHolder> {
 
     public static ArrayList<String> mListCategories = new ArrayList<>();
-    ;
+
     ArrayList<String> mListNames = new ArrayList<>();
-    ;
+
     ArrayList<String> mListDuration = new ArrayList<>();
-    ;
+
     ArrayList<String> mListRating = new ArrayList<>();
-    ;
+
     ArrayList<String> mListFavourite = new ArrayList<>();
-    ;
-    ;
+
+
 
     YTSDK sdk = null;
 
@@ -68,7 +66,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     int mData;
     SharedPreferences sharedPreferences;
 
-    public CategoryListAdapter(Context context, ArrayList<String> listCategories, ArrayList<String> listNames, ArrayList<String> listDuration, ArrayList<String> listRating, ArrayList<String> listFavourite, int data) throws InitializationException {
+    public FavouriteListAdapter(Context context, ArrayList<String> listCategories, ArrayList<String> listNames, ArrayList<String> listDuration, ArrayList<String> listRating, ArrayList<String> listFavourite, int data) throws InitializationException {
         this.mListCategories = listCategories;
         this.mListNames = listNames;
         this.mListDuration = listDuration;
@@ -79,9 +77,9 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         this.mData = data;
 
         if (mListCategories.size() != 0) {
-            CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
+            FavouritesFragment.mRvCategories.setVisibility(View.VISIBLE);
         } else {
-            CategoriesFragment.mRvCategories.setVisibility(View.GONE);
+            FavouritesFragment.mRvCategories.setVisibility(View.GONE);
         }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -106,7 +104,16 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             mIvFavourite = (ImageView) itemView.findViewById(R.id.iv_star_favourite);
             mIvShareIcon = (ImageView) itemView.findViewById(R.id.iv_share_icon);
 
-
+//            if (mData == 1) {
+//                // Gets linearlayout
+//                RelativeLayout layout = (RelativeLayout) itemView.findViewById(R.id.iv_image_layout);
+//                // Gets the layout params that will allow you to resize the layout
+//                ViewGroup.LayoutParams params = layout.getLayoutParams();
+//                // Changes the height and width to the specified *pixels*
+//                params.height = (int) mContext.getResources().getInteger(R.integer.list_row_height);
+//                params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+//                layout.setLayoutParams(params);
+//            }
         }
     }
 
@@ -156,7 +163,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("" + link));
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml("" + link));
                     mContext.startActivity(Intent.createChooser(sharingIntent, "Share using"));
 
                 }
@@ -179,9 +186,54 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                         holder.mIvFavourite.setImageResource(R.drawable.star_grey);
                         db.updateContact(new DataYoutubePojo(mListCategories.get(position), "0"));
                         mListFavourite.set(position, "0 ");
-                        updateAdapter();
 
-                    }
+
+                            clear();
+                            Log.d("Reading: ", "Reading all contacts..");
+                            contacts = db.getAllContacts();
+
+                            for (DataYoutubePojo cn : contacts) {
+                                String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+                                        " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+                                        " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+
+                                if (cn.getVideo_favourite().equals("1")) {
+                                    mListCategories.add(cn.getVideo_id().toString());
+                                    mListNames.add(cn.getVideo_title().toString());
+                                    mListDuration.add(cn.getVideo_duration().toString());
+                                    mListRating.add("" + cn.getVideo_rating());
+                                    mListFavourite.add(cn.getVideo_favourite());
+                                }
+
+                                Log.e("Name: ", log);
+
+                            }
+
+
+                            FavouritesFragment.listCategories = mListCategories;
+                            FavouritesFragment.listNames = mListNames;
+                            FavouritesFragment.listDuration = mListDuration;
+                            FavouritesFragment.listRating = mListRating;
+                            FavouritesFragment.listFavourite = mListFavourite;
+                            try {
+
+
+                                int no = sharedPreferences.getInt("cat", 2);
+
+                                FavouritesFragment.mRvCategories.setAdapter(new FavouriteListAdapter(mContext, mListCategories, mListNames, mListDuration, mListRating, mListFavourite, 1));
+
+                                FavouritesFragment.mRvCategories.setHasFixedSize(true);
+                                GridLayoutManager mLayoutManager = new GridLayoutManager(mContext, 1);
+                                FavouritesFragment.mRvCategories.setLayoutManager(mLayoutManager);
+
+                            } catch (InitializationException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+
+
 
                 }
             });
@@ -234,11 +286,10 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     }
 
     public void updateAdapter() {
-        clear();
         final DatabaseHandler db = new DatabaseHandler(mContext);
         contacts = db.getAllContacts();
 
-
+        clear();
         for (DataYoutubePojo cn : contacts) {
             String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
                     " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +

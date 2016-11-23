@@ -631,13 +631,14 @@ public class FloatingActionMenu extends ViewGroup {
 
           //  mIcon = getResources().getDrawable(R.drawable.ic_clear_white_24dp);
 
-
             if(animate) {
+
+
                 if (isBackgroundEnabled()) {
                     mShowBackgroundAnimator.start();
                 }
 
-            }
+
                 if (mIconAnimated) {
                     if (mIconToggleSet != null) {
                         mIconToggleSet.start();
@@ -647,6 +648,7 @@ public class FloatingActionMenu extends ViewGroup {
                     }
                 }
 
+            }
 
                 int delay = 0;
                 int counter = 0;
@@ -663,12 +665,12 @@ public class FloatingActionMenu extends ViewGroup {
                                 if (isOpened()) return;
 
                                 if (fab != mMenuButton) {
-                                    fab.show(animate);
+                                    fab.show(true);
                                 }
 
                                 Label label = (Label) fab.getTag(R.id.fab_label);
                                 if (label != null && label.isHandleVisibilityChanges()) {
-                                    label.show(animate);
+                                    label.show(true);
                                 }
                             }
                         }, delay);
@@ -696,10 +698,12 @@ public class FloatingActionMenu extends ViewGroup {
 
             if(animate) {
 
+
+
                 if (isBackgroundEnabled()) {
                     mHideBackgroundAnimator.start();
                 }
-            }
+
                 if (mIconAnimated) {
                     if (mIconToggleSet != null) {
                         mIconToggleSet.start();
@@ -709,6 +713,7 @@ public class FloatingActionMenu extends ViewGroup {
                     }
                 }
 
+            }
 
             int delay = 0;
             int counter = 0;
@@ -725,12 +730,12 @@ public class FloatingActionMenu extends ViewGroup {
                             if (!isOpened()) return;
 
                             if (fab != mMenuButton) {
-                                fab.hide(animate);
+                                fab.hide(true);
                             }
 
                             Label label = (Label) fab.getTag(R.id.fab_label);
                             if (label != null && label.isHandleVisibilityChanges()) {
-                                label.hide(animate);
+                                label.hide(true);
                             }
                         }
                     }, delay);

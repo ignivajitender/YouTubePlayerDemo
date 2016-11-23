@@ -14,55 +14,10 @@
         android:layout_below="@+id/btn_view_al_ad"
 
         android:scrollbars="none" />
-    <com.igniva.youtubeplayer.libs.FloatingActionMenu
-        android:id="@+id/menu_red"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
-        fab:menu_labels_ellipsize="end"
-        fab:menu_labels_singleLine="true"
-        fab:menu_backgroundColor="#00ffffff"
-        fab:menu_fab_label=""
-        fab:menu_icon="@drawable/ic_nav_filter"
-        fab:menu_colorNormal="@color/colorPrimaryDark">
 
-        <com.igniva.youtubeplayer.libs.FloatingActionButton
-            android:id="@+id/fab1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_new_releases_white_24dp"
-            android:tint="@color/white"
-            fab:fab_size="mini"
-            fab:fab_label="Latest "
-            fab:theme="@style/MenuButtonsStyle"
-            />
-
-        <com.igniva.youtubeplayer.libs.FloatingActionButton
-            android:id="@+id/fab2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_star_rate_white_18dp"
-            fab:fab_size="mini"
-            fab:fab_label="Top Rated"
-            android:tint="@color/white"
-            fab:theme="@style/MenuButtonsStyle"/>
-
-        <com.igniva.youtubeplayer.libs.FloatingActionButton
-            android:id="@+id/fab3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/favorite_white"
-            fab:fab_size="mini"
-            fab:fab_label="Favourites"
-            fab:theme="@style/MenuButtonsStyle"/>
-
-    </com.igniva.youtubeplayer.libs.FloatingActionMenu>
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/no_data_found_layout"
         android:visibility="gone"
         android:layout_centerInParent="true"
@@ -82,7 +37,7 @@
         android:id="@+id/iv_message"
         android:gravity="center"
         android:layout_below="@+id/no_data_found_image"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#929292"
         />
     </RelativeLayout>
 </RelativeLayout>

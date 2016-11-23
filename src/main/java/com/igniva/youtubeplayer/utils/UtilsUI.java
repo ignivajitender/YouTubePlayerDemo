@@ -23,6 +23,8 @@ import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.ui.activities.YouTubeActivity;
+import com.igniva.youtubeplayer.ui.fragments.FavouritesFragment;
+import com.igniva.youtubeplayer.ui.fragments.GallaryFragment;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -86,27 +88,6 @@ public class UtilsUI {
 
         header = R.color.colorPrimaryDark;
 
-//        if (appAdapter != null) {
-//            apps = Integer.toString(appAdapter.getItemCount());
-//        } else {
-//            apps = loadingLabel;
-//        }
-//        if (appSystemAdapter != null) {
-//            systemApps = Integer.toString(appSystemAdapter.getItemCount());
-//        } else {
-//            systemApps = loadingLabel;
-//        }
-//        if (appFavoriteAdapter != null) {
-//            favoriteApps = Integer.toString(appFavoriteAdapter.getItemCount());
-//        } else {
-//            favoriteApps = loadingLabel;
-//        }
-//        if (appHiddenAdapter != null) {
-//            hiddenApps = Integer.toString(appHiddenAdapter.getItemCount());
-//        } else {
-//            hiddenApps = loadingLabel;
-//        }
-
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(activity)
                 .withHeaderBackground(header)
@@ -146,96 +127,69 @@ public class UtilsUI {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
 
-                CategoriesFragment.hideShowLayout(View.GONE);
+               // CategoriesFragment.hideShowLayout(View.GONE);
+              //  MainActivity.menu_fab.setVisibility(View.VISIBLE);
 
-                CategoriesFragment.menu_fab.close(true);
+             //   CategoriesFragment.menu_fab.close(true);
 
                 switch (iDrawerItem.getIdentifier()) {
                     case 1:
 
-                        CategoriesFragment.hideShowLayout(View.GONE);
+                      //  CategoriesFragment.hideShowLayout(View.GONE);
 
-                        clear();
+                       // clear();
                         favourite_status = false;
                         galery_status = false;
-                        channels_status = false;
+
+                        MainActivity.replaceFragment(new CategoriesFragment());
 
                         // Reading all contacts
-                        Log.d("Reading: ", "Reading all contacts..");
-//                        contacts = db.getAllContacts();
-
-                        mAllData = db.getAllContacts();
-                        for (DataYoutubePojo cn : mAllData) {
-                            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
-                                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
-                                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
-
-                            listCategories.add(cn.getVideo_id().toString());
-                            listNames.add(cn.getVideo_title().toString());
-                            listDuration.add(cn.getVideo_duration().toString());
-                            listRating.add(""+cn.getVideo_rating());
-                            listFavourite.add(cn.getVideo_favourite());
-
-
-                            // Writing Contacts to log
-                            Log.e("Name: ", log);
-
-                        }
-
-                        CategoriesFragment.listCategories = listCategories;
-                        CategoriesFragment.listNames = listNames;
-                        CategoriesFragment.listDuration = listDuration;
-                        CategoriesFragment.listRating = listRating;
-                        CategoriesFragment.listFavourite = listFavourite;
-
-
-
-                            try {
-
-                                setUpGridLayout(context);
-
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+//                        Log.d("Reading: ", "Reading all contacts..");
+////                        contacts = db.getAllContacts();
+//
+//                        mAllData = db.getAllContacts();
+//                        for (DataYoutubePojo cn : mAllData) {
+//                            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+//                                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+//                                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+//
+//                            listCategories.add(cn.getVideo_id().toString());
+//                            listNames.add(cn.getVideo_title().toString());
+//                            listDuration.add(cn.getVideo_duration().toString());
+//                            listRating.add(""+cn.getVideo_rating());
+//                            listFavourite.add(cn.getVideo_favourite());
+//
+//
+//                            // Writing Contacts to log
+//                            Log.e("Name: ", log);
+//
+//                        }
+//
+//                        CategoriesFragment.listCategories = listCategories;
+//                        CategoriesFragment.listNames = listNames;
+//                        CategoriesFragment.listDuration = listDuration;
+//                        CategoriesFragment.listRating = listRating;
+//                        CategoriesFragment.listFavourite = listFavourite;
+//
+//
+//
+//                            try {
+//
+//                                setUpGridLayout(context);
+//
+//                            }catch (Exception e){
+//                                e.printStackTrace();
+//                            }
 
 
                         MainActivity.toolbar.setTitle("Latest Videos");
                         break;
                     case 2:
-                        CategoriesFragment.hideShowLayout(View.GONE);
 
                         favourite_status = false;
-                        favourite_status = false;
-                        channels_status = false;
+                        MainActivity.replaceFragment(new GallaryFragment());
+                        MainActivity.menu_fab.close(true);
 
-                        small_images_url.clear();
-                        medium_images_url.clear();
-                        large_images_url.clear();
-
-                        CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-
-                        galery_status = true;
-                        int no = sharedPreferences.getInt("cat", 2);
-
-                        mAllImages = m.getMyImages();
-
-                        for (DataGalleryPojo cn : mAllImages) {
-//                            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
-//                                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
-//                                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
-
-                            large_images_url.add(cn.getImage_link().toString());
-
-                            // Writing Contacts to log
-//                            Log.e("Name: ", log);
-
-                        }
-
-
-                            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapterGallery(context, large_images_url, 1));
-                            CategoriesFragment.mRvCategories.setHasFixedSize(true);
-                            GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
-                            CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
 
                         MainActivity.toolbar.setTitle("Gallery");
                         break;
@@ -243,53 +197,12 @@ public class UtilsUI {
 
                     case 3:
 
-                        CategoriesFragment.hideShowLayout(View.GONE);
-
-                        clear();
-                        channels_status = false;
                         favourite_status = true;
                         galery_status = false;
-                        // Reading all contacts
-                        Log.d("Reading: ", "Reading all contacts..");
-//                        contacts = db.getAllContacts();
 
-         //               mAllData = m.getMyData();
-                        mAllData = db.getAllContacts();
-                        for (DataYoutubePojo cn : mAllData) {
-                            String log = "video_Id_favourite: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
-                                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
-                                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+                        MainActivity.replaceFragment(new FavouritesFragment());
+                        MainActivity.menu_fab.close(true);
 
-                            if (cn.getVideo_favourite().equals("1")) {
-                                listCategories.add(cn.getVideo_id().toString());
-                                listNames.add(cn.getVideo_title().toString());
-                                listDuration.add(cn.getVideo_duration().toString());
-                                listRating.add(""+cn.getVideo_rating());
-                                listFavourite.add(cn.getVideo_favourite());
-                            }
-
-// Writing Contacts to log
-                            Log.e("Name: ", log);
-
-                        }
-
-                        if(listCategories.size() == 0){
-                            CategoriesFragment.hideShowLayout(View.GONE);
-                        }
-
-                        CategoriesFragment.listCategories = listCategories;
-                        CategoriesFragment.listNames = listNames;
-                        CategoriesFragment.listDuration = listDuration;
-                        CategoriesFragment.listRating = listRating;
-                        CategoriesFragment.listFavourite = listFavourite;
-
-                        try {
-
-                            setUpGridLayout(context);
-
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
 
 
                         MainActivity.toolbar.setTitle("Favourite");
