@@ -50,10 +50,7 @@ public class GallaryFragment extends BaseFragment implements FloatingActionMenu.
     MainActivity main = new MainActivity();
     List<DataGalleryPojo> mAllImages = main.getMyImages();
 
-    public static GallaryFragment newInstance() {
-        GallaryFragment fragment = new GallaryFragment();
-        return fragment;
-    }
+
 
     @Nullable
     @Override

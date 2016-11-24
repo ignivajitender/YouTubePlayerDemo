@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,19 +13,27 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
 import com.igniva.youtubeplayer.libs.FloatingActionMenu;
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
+import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
 import com.igniva.youtubeplayer.R;
 
@@ -35,6 +44,9 @@ import com.igniva.youtubeplayer.utils.UtilsUI;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FloatingActionMenu.OnMenuToggleListener {
@@ -45,6 +57,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Boolean doubleBackToExitPressedOnce = false;
    public static List<DataYoutubePojo> mAllData;
    public static List<DataGalleryPojo> mAllImages;
+    DatabaseHandler mDatabaseHandler;
+    public static ArrayList<String> listCategories, listDuration, listNames, listRating, listFavourite;
+
+    InterstitialAd mInterstitialAd;
+
+    public String device_id;
+
+    private AdView mAdView;
+
 
     FloatingActionButton fab1,fab2,fab3;
     public static FloatingActionMenu menu_fab;
@@ -61,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         context = getApplicationContext();
 
+        device_id = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        mDatabaseHandler = new DatabaseHandler(MainActivity.this);
+
         fragmentManager = getSupportFragmentManager();
 
         if (getIntent().hasExtra(Constants.ALL_DATA)) {
@@ -75,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try {
 
-            drawer = UtilsUI.setNavigationDrawer(MainActivity.this, context, toolbar);
+            drawer = UtilsUI.setNavigationDrawer(MainActivity.this, MainActivity.this, toolbar);
 
         }catch (Exception e){
 
@@ -104,12 +130,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         menu_fab.setOnMenuToggleListener(MainActivity.this);
 
+        listCategories = new ArrayList<String>();
+        listDuration = new ArrayList<String>();
+        listNames = new ArrayList<String>();
+        listRating = new ArrayList<String>();
+        listFavourite = new ArrayList<String>();
+
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                MainActivity.replaceFragment(new CategoriesFragment());
+               // MainActivity.replaceFragment(new CategoriesFragment());
 
+                fetchLatestVideos();
+                menu_fab.close(true);
 
                 MainActivity.toolbar.setTitle("Latest Videos");
             }
@@ -121,7 +155,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 menu_fab.close(true);
 
-                MainActivity.replaceFragment(new TopRatedCategoryFragment());
+
+                fetchTopRatedVideos();
+           //     MainActivity.replaceFragment(new TopRatedCategoryFragment());
 
                 MainActivity.toolbar.setTitle("Top Rated");
             }
@@ -142,6 +178,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
+
+
+         mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        mAdView.loadAd(adRequest);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -167,7 +209,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer();
         } else {
             if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
+
+                showAdd();
+              //  super.onBackPressed();
                 return;
             }
             this.doubleBackToExitPressedOnce = true;
@@ -175,9 +219,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+
+
                     doubleBackToExitPressedOnce = false;
                 }
             }, 2000);
+        }
+    }
+
+    private void showAdd() {
+
+        try {
+
+            mInterstitialAd = new InterstitialAd(this);
+
+            // set the ad unit ID
+            mInterstitialAd.setAdUnitId(getString(R.string.interstitial_full_screen));
+
+            AdRequest adRequest = new AdRequest.Builder()
+                    .build();
+
+            // Load ads into Interstitial Ads
+            mInterstitialAd.loadAd(adRequest);
+
+            mInterstitialAd.setAdListener(new AdListener() {
+                public void onAdLoaded() {
+                    showInterstitial();
+                }
+
+
+            });
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -220,6 +293,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        AppIndex.AppIndexApi.end(client, viewAction);
 //        client.disconnect();
     }
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
+
 
     public  static void replaceFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -249,5 +346,96 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+    public void fetchLatestVideos(){
+        clear();
+        Log.d("Reading: ", "Reading all contacts..");
 
+        mAllData = mDatabaseHandler.getAllContacts();
+
+        for (DataYoutubePojo cn : mAllData) {
+            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+
+            listCategories.add(cn.getVideo_id().toString());
+            listNames.add(cn.getVideo_title().toString());
+            listDuration.add(cn.getVideo_duration().toString());
+            listRating.add("" + cn.getVideo_rating());
+            listFavourite.add(cn.getVideo_favourite());
+
+            // Writing Contacts to log
+            Log.e("Name: ", log);
+
+        }
+
+        setUpLayouts();
+
+    }
+
+
+    public void fetchTopRatedVideos(){
+        clear();
+        Log.d("Reading: ", "Reading all contacts..");
+
+        mAllData = mDatabaseHandler.getAllContacts();
+
+        Collections.sort(mAllData, new Comparator<DataYoutubePojo>() {
+            @Override
+            public int compare(DataYoutubePojo c1, DataYoutubePojo c2) {
+                return Integer.compare(c1.getVideo_rating(), c2.getVideo_rating());
+            }
+        });
+
+        Collections.reverse(mAllData);
+
+        for (DataYoutubePojo cn : mAllData) {
+            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+
+            listCategories.add(cn.getVideo_id().toString());
+            listNames.add(cn.getVideo_title().toString());
+            listDuration.add(cn.getVideo_duration().toString());
+            listRating.add("" + cn.getVideo_rating());
+            listFavourite.add(cn.getVideo_favourite());
+
+
+        }
+        if (listCategories.size() == 0) {
+
+            CategoriesFragment.no_data_found_layout.setVisibility(View.VISIBLE);
+
+        }
+
+
+        setUpLayouts();
+
+    }
+
+    public void setUpLayouts() {
+
+        try {
+            CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
+            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(MainActivity.this, listCategories, listNames, listDuration, listRating, listFavourite, 1));
+            CategoriesFragment.mRvCategories.setHasFixedSize(true);
+            GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1);
+            CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clear(){
+        listCategories.clear();
+        listNames.clear();
+        listDuration.clear();
+        listFavourite.clear();
+        listRating.clear();
+    }
+    private void showInterstitial() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            super.onBackPressed();
+        }
+    }
 }

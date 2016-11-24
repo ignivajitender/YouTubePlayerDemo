@@ -97,4 +97,10 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="share_app">Share App</string>
+    <string name="Later">Later</string>
+    <string name="Share">Share</string>
+    <string name="share">Share</string>
+    <string name="banner_home_footer">ca-app-pub-1790594491486375/7503629248</string>
+    <string name="interstitial_full_screen">ca-app-pub-1790594491486375/8980362446</string>
 </resources>

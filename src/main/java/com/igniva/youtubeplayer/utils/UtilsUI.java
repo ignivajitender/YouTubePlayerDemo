@@ -5,15 +5,23 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
@@ -35,55 +43,44 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import yt.sdk.access.InitializationException;
 
 public class UtilsUI {
 
-    public static ArrayList<String> listCategories, listDuration, listNames, listRating, listFavourite;
-    static List<DataYoutubePojo> contacts;
-    public static ArrayList<String> small_images_url, medium_images_url, large_images_url, channels_name, channel_thumb;
+
     public static boolean galery_status, favourite_status, channels_status;
-    static List<DataYoutubePojo> mAllData;
-    static List<DataGalleryPojo> mAllImages;
+
     static MainActivity m;
 
-    private final static String APP_PNAME = "com.igniva.youtubeplayer";// Package Name
+    static Boolean isShare = true;
+
+    static String data;
+
+    static  EditText share_message_editText;
+
+    private final static String APP_PNAME = "com.igniva.youtubeplayer";
 
 
     public static int darker(int color, double factor) {
+
         int a = Color.alpha(color);
         int r = Color.red(color);
         int g = Color.green(color);
         int b = Color.blue(color);
 
         return Color.argb(a, Math.max((int) (r * factor), 0), Math.max((int) (g * factor), 0), Math.max((int) (b * factor), 0));
+
     }
 
     public static Drawer setNavigationDrawer(Activity activity, final Context context, Toolbar toolbar) {
-        final String loadingLabel = "...";
-        int header;
-        String apps, systemApps, favoriteApps, hiddenApps;
 
-        channels_name = new ArrayList<>();
-        channel_thumb = new ArrayList<>();
-        listCategories = new ArrayList<String>();
-        listDuration = new ArrayList<String>();
-        listNames = new ArrayList<String>();
-        listRating = new ArrayList<String>();
-        listFavourite = new ArrayList<String>();
-        small_images_url = new ArrayList<String>();
-        medium_images_url = new ArrayList<String>();
-        large_images_url = new ArrayList<String>();
+        int header;
 
         m = new MainActivity();
-
 
         final DatabaseHandler db = new DatabaseHandler(context);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         header = R.color.colorPrimaryDark;
@@ -95,17 +92,22 @@ public class UtilsUI {
 
 
         Integer badgeColor = ContextCompat.getColor(context, R.color.divider);
+
         BadgeStyle badgeStyle = new BadgeStyle(badgeColor, badgeColor).withTextColor(Color.GRAY);
 
-        DrawerBuilder drawerBuilder = new DrawerBuilder();
-        drawerBuilder.withActivity(activity);
-        drawerBuilder.withToolbar(toolbar);
-        drawerBuilder.withAccountHeader(headerResult);
-//        drawerBuilder.withStatusBarColor(UtilsUI.darker(appPreferences.getPrimaryColorPref(), 0.8));
 
+        DrawerBuilder drawerBuilder = new DrawerBuilder();
+
+        drawerBuilder.withActivity(activity);
+
+        drawerBuilder.withToolbar(toolbar);
+
+        drawerBuilder.withAccountHeader(headerResult);
 
         drawerBuilder.addDrawerItems(
+
                 new PrimaryDrawerItem().withName("Videos").withIcon(R.drawable.ic_new_releases_black_24dp).withIdentifier(1),
+
                 new PrimaryDrawerItem().withName("Gallery").withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
 
                 new PrimaryDrawerItem().withName("Favourite").withIcon(R.drawable.ic_favorite_black_24dp).withIdentifier(3),
@@ -127,102 +129,72 @@ public class UtilsUI {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem iDrawerItem) {
 
-               // CategoriesFragment.hideShowLayout(View.GONE);
-              //  MainActivity.menu_fab.setVisibility(View.VISIBLE);
-
-             //   CategoriesFragment.menu_fab.close(true);
-
                 switch (iDrawerItem.getIdentifier()) {
                     case 1:
 
-                      //  CategoriesFragment.hideShowLayout(View.GONE);
-
-                       // clear();
                         favourite_status = false;
+
                         galery_status = false;
 
                         MainActivity.replaceFragment(new CategoriesFragment());
 
-                        // Reading all contacts
-//                        Log.d("Reading: ", "Reading all contacts..");
-////                        contacts = db.getAllContacts();
-//
-//                        mAllData = db.getAllContacts();
-//                        for (DataYoutubePojo cn : mAllData) {
-//                            String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
-//                                    " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
-//                                    " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
-//
-//                            listCategories.add(cn.getVideo_id().toString());
-//                            listNames.add(cn.getVideo_title().toString());
-//                            listDuration.add(cn.getVideo_duration().toString());
-//                            listRating.add(""+cn.getVideo_rating());
-//                            listFavourite.add(cn.getVideo_favourite());
-//
-//
-//                            // Writing Contacts to log
-//                            Log.e("Name: ", log);
-//
-//                        }
-//
-//                        CategoriesFragment.listCategories = listCategories;
-//                        CategoriesFragment.listNames = listNames;
-//                        CategoriesFragment.listDuration = listDuration;
-//                        CategoriesFragment.listRating = listRating;
-//                        CategoriesFragment.listFavourite = listFavourite;
-//
-//
-//
-//                            try {
-//
-//                                setUpGridLayout(context);
-//
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
-
-
                         MainActivity.toolbar.setTitle("Latest Videos");
+
                         break;
                     case 2:
 
                         favourite_status = false;
+
                         MainActivity.replaceFragment(new GallaryFragment());
+
                         MainActivity.menu_fab.close(true);
 
-
                         MainActivity.toolbar.setTitle("Gallery");
-                        break;
 
+                        break;
 
                     case 3:
 
                         favourite_status = true;
+
                         galery_status = false;
 
                         MainActivity.replaceFragment(new FavouritesFragment());
+
                         MainActivity.menu_fab.close(true);
 
-
-
                         MainActivity.toolbar.setTitle("Favourite");
+
                         break;
 
-
                     case 4:
-                        CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
+
                         favourite_status = false;
-                        channels_status = false;
+
                         galery_status = false;
-                        Intent in5 = new Intent(context, YouTubeActivity.class);
-                        in5.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(in5);
-                        //overridePendingTransition(R.anim.right_in, R.anim.right_out);
+
+                        Intent settingActivityIntent = new Intent(context, YouTubeActivity.class);
+
+                        settingActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        context.startActivity(settingActivityIntent);
+
+                        try {
+
+                            ((Activity) context).overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                        }catch (Exception e){
+
+                            e.printStackTrace();
+
+                        }
 
                         break;
 
                     case 5:
+
                         Uri uri = Uri.parse("market://details?id=" + "com.sqwip");
+
                         Intent rateApp = new Intent(Intent.ACTION_VIEW, uri);
                         // To count with Play market backstack, After pressing back button,
                         // to taken back to our application, we need to add following flags to intent.
@@ -231,20 +203,28 @@ public class UtilsUI {
                                 Intent.FLAG_ACTIVITY_MULTIPLE_TASK|
                                 Intent.FLAG_ACTIVITY_NEW_TASK
                                 );
+
                         try {
+
                             context.startActivity(rateApp);
+
                         } catch (ActivityNotFoundException e) {
+
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
 
                                     Uri.parse("http://play.google.com/store/apps/details?id=" + "com.sqwip")));
+
                         }catch (Exception e){
                             e.printStackTrace();
                         }
+
                         break;
 
 
                     case 6:
+
                          uri = Uri.parse("market://search?q=pub:saga");
+
                         Intent moreFreeApps = new Intent(Intent.ACTION_VIEW, uri);
                         // To count with Play market backstack, After pressing back button,
                         // to taken back to our application, we need to add following flags to intent.
@@ -252,36 +232,85 @@ public class UtilsUI {
                                 Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
                                 Intent.FLAG_ACTIVITY_MULTIPLE_TASK|
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
+
                         try {
+
                             context.startActivity(moreFreeApps);
+
                         } catch (ActivityNotFoundException e) {
+
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
                                     Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
 
+                        }catch (Exception e){
+
+                            e.printStackTrace();
+
+                        }
 
                         break;
 
                     case 7:
+                        String appname = getAppName(context);
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
 
-                        Intent shareIntent = new Intent();
-                        shareIntent.setAction(Intent.ACTION_SEND);
-                        shareIntent.putExtra(Intent.EXTRA_TEXT,
-                                "Hey check out my app at: https://play.google.com/store/apps/details?id="+context.getPackageName());
-                        shareIntent.setType("text/plain");
-                        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        try {
-                            context.startActivity(shareIntent);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
+                        View v = layoutInflater.inflate(R.layout.custum_share_dailog, null);
 
+                       MaterialDialog.Builder  materialDialog = new MaterialDialog.Builder((Activity)context)
+                                .title(context.getResources().getString(R.string.share)+" " +appname)
+                                .customView(v,true)
+
+                                .negativeText(context.getResources().getString(R.string.Later))
+                                .positiveText(context.getResources().getString(R.string.share))
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                        Intent shareIntent = new Intent();
+
+                                        shareIntent.setAction(Intent.ACTION_SEND);
+
+                                        shareIntent.putExtra(Intent.EXTRA_TEXT,
+                                                share_message_editText.getText().toString());
+
+                                        shareIntent.setType("text/plain");
+
+                                        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                        try {
+
+                                            context.startActivity(shareIntent);
+
+                                        }catch (Exception e){
+
+                                            e.printStackTrace();
+
+                                        }
+                                    }
+                                })
+                                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                        dialog.dismiss();
+
+                                    }
+                                });
+
+                        share_message_editText = (EditText)v.findViewById(R.id.iv_share_message);
+
+                        share_message_editText.setText("Hey check out my app at: https://play.google.com/store/apps/details?id=" + context.getPackageName());
+
+                        share_message_editText.setSelection(share_message_editText.getText().length());
+
+                        materialDialog.show();
 
                         break;
+
                     default:
+
                         break;
+
                 }
 
                 return false;
@@ -291,29 +320,16 @@ public class UtilsUI {
         return drawerBuilder.build();
     }
 
-    private static void clear() {
-
-        channel_thumb.clear();
-        channels_name.clear();
-
-        listCategories.clear();
-        listNames.clear();
-        listDuration.clear();
-        listRating.clear();
-        listFavourite.clear();
-
-        CategoriesFragment.listCategories.clear();
-        CategoriesFragment.listNames.clear();
-        CategoriesFragment.listDuration.clear();
-        CategoriesFragment.listRating.clear();
-        CategoriesFragment.listFavourite.clear();
-    }
-
-    public static void setUpGridLayout(Context context) throws InitializationException {
-        CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(context, listCategories, listNames, listDuration, listRating, listFavourite, 1));
-        CategoriesFragment.mRvCategories.setHasFixedSize(true);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(context, 1);
-        CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
+    public static String getAppName(Context context){
+        final PackageManager pm = context.getPackageManager();
+        ApplicationInfo ai;
+        try {
+            ai = pm.getApplicationInfo(context.getPackageName(), 0);
+        } catch (Exception e) {
+            ai = null;
+        }
+        final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+        return applicationName;
     }
 
 }
