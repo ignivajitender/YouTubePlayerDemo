@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
+import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterGallery;
@@ -42,6 +43,8 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import static com.igniva.youtubeplayer.ui.activities.MainActivity.TRACK_LOG;
 
 
 public class UtilsUI {
@@ -284,6 +287,8 @@ public class UtilsUI {
                                         }catch (Exception e){
 
                                             e.printStackTrace();
+
+                                            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
 
                                         }
                                     }

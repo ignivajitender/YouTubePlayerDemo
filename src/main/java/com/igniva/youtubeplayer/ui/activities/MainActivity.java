@@ -21,10 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,8 +37,8 @@ import com.igniva.youtubeplayer.libs.FloatingActionMenu;
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
+import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
-import com.igniva.youtubeplayer.R;
 
 import com.igniva.youtubeplayer.ui.fragments.FavouritesFragment;
 import com.igniva.youtubeplayer.ui.fragments.TopRatedCategoryFragment;
@@ -48,6 +51,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.igniva.youtubeplayer.R;
+
+
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FloatingActionMenu.OnMenuToggleListener {
     static FragmentManager fragmentManager;
@@ -58,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
    public static List<DataYoutubePojo> mAllData;
    public static List<DataGalleryPojo> mAllImages;
     DatabaseHandler mDatabaseHandler;
+    public static String TRACK_LOG= "track log event";
+    public static String BUTTON_CLICK_EVENT= "button clicked";
     public static ArrayList<String> listCategories, listDuration, listNames, listRating, listFavourite;
 
     InterstitialAd mInterstitialAd;
@@ -140,12 +149,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-               // MainActivity.replaceFragment(new CategoriesFragment());
+                try {
+                    MyApplication.getInstance().trackEvent("Dashboard",BUTTON_CLICK_EVENT,"Latest Video Clicked");
 
-                fetchLatestVideos();
-                menu_fab.close(true);
+                    fetchLatestVideos();
 
-                MainActivity.toolbar.setTitle("Latest Videos");
+                    menu_fab.close(true);
+
+                    MainActivity.toolbar.setTitle("Latest Videos");
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    MyApplication.getInstance().trackEvent(TRACK_LOG,"Latest button pressed",e.getMessage());
+
+                }
+
             }
         });
 
@@ -155,9 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 menu_fab.close(true);
 
-
                 fetchTopRatedVideos();
-           //     MainActivity.replaceFragment(new TopRatedCategoryFragment());
 
                 MainActivity.toolbar.setTitle("Top Rated");
             }
@@ -167,29 +183,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-
                 UtilsUI.favourite_status = true;
-                menu_fab.close(true);
-                MainActivity.replaceFragment(new FavouritesFragment());
 
+                menu_fab.close(true);
+
+                MainActivity.replaceFragment(new FavouritesFragment());
 
                 MainActivity.toolbar.setTitle("Favourite");
             }
         });
 
 
+        showBannerAdd();
 
+        initializeCrashLytics();
 
-         mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-        mAdView.loadAd(adRequest);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 //        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-   public List<DataYoutubePojo> getMyData() {
+    private void showBannerAdd() {
+        try {
+
+            mAdView = (AdView) findViewById(R.id.adView);
+
+            AdRequest adRequest = new AdRequest.Builder()
+                    .build();
+            mAdView.loadAd(adRequest);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            MyApplication.getInstance().trackEvent(TRACK_LOG,"banner add",e.getMessage());
+
+        }
+
+    }
+
+    private void initializeCrashLytics() {
+
+        try {
+
+            Fabric.with(this, new Crashlytics());
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+
+            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+
+
+        }
+
+    }
+
+    public List<DataYoutubePojo> getMyData() {
         return mAllData;
     }
 
@@ -231,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try {
 
+
             mInterstitialAd = new InterstitialAd(this);
 
             // set the ad unit ID
@@ -249,8 +300,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             });
+
         }catch (Exception e){
             e.printStackTrace();
+
+            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+
         }
     }
 

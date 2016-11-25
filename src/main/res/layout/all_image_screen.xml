@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_wallpaper_white_24dp"
             fab:fab_size="mini"
-            fab:fab_label="Change Background"
+            fab:fab_label="Ser Wallpaper"
             fab:theme="@style/MenuButtonsStyle"
             />
 
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_save_white_24dp"
             fab:fab_size="mini"
-            fab:fab_label="Save"
+            fab:fab_label="Download"
             fab:theme="@style/MenuButtonsStyle"/>
 
         <com.igniva.youtubeplayer.libs.FloatingActionButton

@@ -11,9 +11,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.gson.Gson;
 import com.igniva.youtubeplayer.R;
+import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.utils.OrientationEnum;
 
 
@@ -232,5 +235,13 @@ public class YouTubeActivity extends AppCompatActivity {
         return names;
     }
 
+    @Override
+    public void onResume(){
+
+        super.onResume();
+        Tracker tracker = MyApplication.getInstance().getGoogleAnalyticsTracker();
+        tracker.setScreenName("Settings");
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
 
 }

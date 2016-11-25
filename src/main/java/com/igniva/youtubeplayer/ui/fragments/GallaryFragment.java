@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
@@ -25,6 +27,7 @@ import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterGallery;
+import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.utils.UtilsUI;
 
 import java.util.ArrayList;
@@ -164,6 +167,14 @@ public class GallaryFragment extends BaseFragment implements FloatingActionMenu.
 
         }
 
+    }
+    @Override
+    public void onResume(){
+
+        super.onResume();
+        Tracker tracker = MyApplication.getInstance().getGoogleAnalyticsTracker();
+        tracker.setScreenName("Gallary");
+        tracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
 

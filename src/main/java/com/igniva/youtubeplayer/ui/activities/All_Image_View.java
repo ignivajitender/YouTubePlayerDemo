@@ -38,6 +38,7 @@ import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.controller.BasicImageDownloader;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
 import com.igniva.youtubeplayer.libs.FloatingActionMenu;
+import com.igniva.youtubeplayer.ui.application.MyApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,6 +47,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static com.igniva.youtubeplayer.ui.activities.MainActivity.TRACK_LOG;
 
 
 /**
@@ -227,8 +230,14 @@ ProgressDialog prog;
                                     into(-1, -1).
                                     get();
                         } catch (final ExecutionException e) {
+
+                            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+
 //                            Log.e(TAG, e.getMessage());
                         } catch (final InterruptedException e) {
+
+                            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+
 //                            Log.e(TAG, e.getMessage());
                         }
                         return null;
@@ -473,7 +482,11 @@ ProgressDialog prog;
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
+
+                            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+
                         }
+
 
                     }
 

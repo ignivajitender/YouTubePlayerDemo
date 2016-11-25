@@ -27,6 +27,8 @@
     <string name="settings">Settings</string>
 
     <string name="youtubekey">AIzaSyAOfxiG4aV66h3XmssCEkP3qCvCqMbDGDI</string>
+    <string name="fabric_key">7f13cc184549fdf0b47c81233930bfdccce27582
+</string>
 
     <!-- old   AIzaSyAOfxiG4aV66h3XmssCEkP3qCvCqMbDGDI-->
 
@@ -103,4 +105,5 @@
     <string name="share">Share</string>
     <string name="banner_home_footer">ca-app-pub-1790594491486375/7503629248</string>
     <string name="interstitial_full_screen">ca-app-pub-1790594491486375/8980362446</string>
+    <string name="google_analytics_tracking_id">UA-88007937-1</string>
 </resources>
