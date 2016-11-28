@@ -78,7 +78,7 @@ public class GallaryFragment extends BaseFragment implements FloatingActionMenu.
 
         final DatabaseHandler db = new DatabaseHandler(getActivity());
 
-        fetchLatestVideos();
+        fetchGallaryData();
 
         return mView;
     }
@@ -117,7 +117,7 @@ public class GallaryFragment extends BaseFragment implements FloatingActionMenu.
 }
 
 
-    public void fetchLatestVideos(){
+    public void fetchGallaryData(){
         Log.d("Reading: ", "Reading all contacts..");
 
         UtilsUI.favourite_status = false;
@@ -168,6 +168,7 @@ public class GallaryFragment extends BaseFragment implements FloatingActionMenu.
         }
 
     }
+
     @Override
     public void onResume(){
 
@@ -175,7 +176,7 @@ public class GallaryFragment extends BaseFragment implements FloatingActionMenu.
         Tracker tracker = MyApplication.getInstance().getGoogleAnalyticsTracker();
         tracker.setScreenName("Gallary");
         tracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
 
+    }
 
 }

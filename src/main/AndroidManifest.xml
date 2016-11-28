@@ -49,7 +49,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="@string/fabric_key" />
+            android:value="7f13cc184549fdf0b47c81233930bfdccce27582" />
 
 
         <activity android:name=".ui.activities.GIFActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for

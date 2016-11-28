@@ -220,6 +220,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 DataGalleryPojo contact = new DataGalleryPojo();
                 contact.setImage_no(cursor.getString(0));
                 contact.setImage_link(cursor.getString(1));
+                contact.setThumb_image(cursor.getString(2));
 
                 // Adding contact to list
                 contactList.add(contact);

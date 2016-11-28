@@ -37,9 +37,8 @@
         android:id="@+id/rv_categories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:scrollbars="none"
         android:layout_below="@+id/no_data_found_layout"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp" />
+        />
 </RelativeLayout>

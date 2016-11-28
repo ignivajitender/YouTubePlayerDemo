@@ -135,7 +135,6 @@ public class SplashActivity extends AppCompatActivity {
 //                listRating.add(cn.getVideo_rating().toString());
 //                listFavourite.add(cn.getVideo_favourite());
 
-
                 // Writing Contacts to log
                 Log.e("Name_Splash: ", log);
 

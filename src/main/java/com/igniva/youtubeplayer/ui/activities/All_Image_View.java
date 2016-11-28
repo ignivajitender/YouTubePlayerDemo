@@ -33,12 +33,12 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.controller.BasicImageDownloader;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
 import com.igniva.youtubeplayer.libs.FloatingActionMenu;
 import com.igniva.youtubeplayer.ui.application.MyApplication;
+import com.igniva.youtubeplayer.utils.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -55,31 +55,28 @@ import static com.igniva.youtubeplayer.ui.activities.MainActivity.TRACK_LOG;
  * Created by igniva-andriod-03 on 2/9/16.
  */
 public class All_Image_View extends AppCompatActivity {
+
     private static final String TAG = "saving issue";
+    private static final String BUTTON_CLICK_EVENT = "Click Event";
     List<String> image_list;
     image_adapter image_adapter;
     ViewPager viewPager;
     int position_previous;
-    Bitmap bitmap;
-    public static boolean bitmap_boo;
     private Bitmap theBitmap = null;
     public static int sPosition;
     public static List<String> wallpaper_list = new ArrayList<>();
-    public static String wall_String_url;
 
-    private FloatingActionMenu menuRed;
     CircularProgressView progressWheel;
     private FloatingActionButton fab1;
     private FloatingActionButton fab2;
     private FloatingActionButton fab3;
-ProgressDialog prog;
-    private List<FloatingActionMenu> menus = new ArrayList<>();
-    private Handler mUiHandler = new Handler();
+    private File mFile = null;
+
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,17 +90,14 @@ ProgressDialog prog;
         setContentView(R.layout.all_image_screen);
         progressWheel = (CircularProgressView) findViewById(R.id.progressBar);
 
-        menuRed = (FloatingActionMenu) findViewById(R.id.menu_red);
 
         fab1 = (FloatingActionButton) findViewById(R.id.fab1);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) findViewById(R.id.fab3);
 
-
-//        toolbar=(Toolbar)findViewById(R.id.toolbar);
         viewPager = (ViewPager) findViewById(R.id.img);
         image_list = new ArrayList();
-//        setSupportActionBar(toolbar);
+
 // inside onCreate of Activity or Fragment
         Intent intent = getIntent();
 
@@ -117,7 +111,7 @@ ProgressDialog prog;
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MyApplication.getInstance().trackEvent("Gallary View","Set Wallpaper ",BUTTON_CLICK_EVENT);
                 progressWheel.setVisibility(View.VISIBLE);
                 progressWheel.startAnimation();
 
@@ -130,16 +124,59 @@ ProgressDialog prog;
             @Override
             public void onClick(View v) {
 
+                MyApplication.getInstance().trackEvent("Gallary View","Save Image ",BUTTON_CLICK_EVENT);
+
+
                 progressWheel.setVisibility(View.VISIBLE);
                 progressWheel.startAnimation();
 
                 final int data = viewPager.getCurrentItem();
 
-                String imageUrl = wallpaper_list.get(data).toString();
+                String dirPath = getFilesDir().getAbsolutePath() + File.separator + "Wallpapers";
 
-                String filename = imageUrl.substring(imageUrl.lastIndexOf("/")+1,imageUrl.lastIndexOf("."));
+                File projDir = new File(dirPath);
 
-                final String imageName = "Wallpaper_" + filename + ".jpg";
+                if (!projDir.exists())
+                    projDir.mkdirs();
+
+//                            File f = new File(Environment.getExternalStorageDirectory() +"/Wallpapers/"+ File.separator +imageName);
+
+                // create a File object for the parent directory
+                File wallpaperDirectory = new File("/" + Environment.getExternalStorageDirectory() + "/Wallpapers/");
+
+// have the object build the directory structure, if needed.
+
+                wallpaperDirectory.mkdirs();
+
+// create a File object for the output file
+
+
+
+                final String imageUrl = getImageLink(wallpaper_list.get(data).toString());
+
+                String imageName = null;
+
+                String filename = null;
+
+
+                if(!imageUrl.contains("drive.google.com")) {
+
+                    filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1, imageUrl.lastIndexOf("."));
+
+                    imageName = "Wallpaper_" + filename + ".jpg";
+
+                    mFile = new File(wallpaperDirectory, imageName);
+
+                }else {
+
+                    filename = imageUrl.substring(imageUrl.indexOf("="),imageUrl.length()-1);
+
+                    imageName = "Wallpaper_" + filename + ".jpg";
+
+                    mFile = new File(wallpaperDirectory, imageName);
+                }
+
+                mFile = new File(projDir, imageName);
 
                 new AsyncTask<Void, Void, Void>() {
                     @Override
@@ -149,7 +186,7 @@ ProgressDialog prog;
 
                             theBitmap = Glide.
                                     with(All_Image_View.this).
-                                    load(wallpaper_list.get(data).toString()).
+                                    load(imageUrl).
                                     asBitmap().
                                     into(-1, -1).
                                     get();
@@ -169,29 +206,11 @@ ProgressDialog prog;
 
                             theBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
-                            String dirPath = getFilesDir().getAbsolutePath() + File.separator + "Wallpapers";
 
-                            File projDir = new File(dirPath);
-
-                            if (!projDir.exists())
-                                projDir.mkdirs();
-
-//                            File f = new File(Environment.getExternalStorageDirectory() +"/Wallpapers/"+ File.separator +imageName);
-
-                            // create a File object for the parent directory
-                            File wallpaperDirectory = new File("/" + Environment.getExternalStorageDirectory() + "/Wallpapers/");
-
-// have the object build the directory structure, if needed.
-
-                            wallpaperDirectory.mkdirs();
-
-// create a File object for the output file
-
-                            File f = new File(projDir, imageName);
 
                             try {
                             //   f.createNewFile();
-                                FileOutputStream fo = new FileOutputStream(f);
+                                FileOutputStream fo = new FileOutputStream(mFile);
                                 fo.write(bytes.toByteArray());
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -212,6 +231,8 @@ ProgressDialog prog;
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                MyApplication.getInstance().trackEvent("Gallary View","Share Image ",BUTTON_CLICK_EVENT);
 
                 progressWheel.setVisibility(View.VISIBLE);
                 progressWheel.startAnimation();
@@ -286,20 +307,35 @@ ProgressDialog prog;
         });
 
 
-  client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+ // client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        client.connect();
+       // client.connect();
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        client.disconnect();
+      //  client.disconnect();
+    }
+
+    public String getImageLink(String imageUrl) {
+
+        if(imageUrl.contains(Constants.DRIVE_STRING)){
+
+            String[] splitLinkArray=imageUrl.split("/");
+
+            String imageLink=Constants.DRIVE_URL+splitLinkArray[5];
+
+            return imageLink;
+
+        }
+
+        return imageUrl;
     }
 
     public class image_adapter extends PagerAdapter {
@@ -332,6 +368,7 @@ ProgressDialog prog;
                     container, false);
 
             final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) layout.findViewById(R.id.image_preview);
+            imageView.setZoomEnabled(true);
 
             sPosition = position;
             wallpaper_list = arrayList;
@@ -344,43 +381,73 @@ ProgressDialog prog;
 
                 wallpaperDirectory.mkdirs();
 
-            String imageUrl = wallpaper_list.get(position).toString();
+            String imageUrl = getImageLink(wallpaper_list.get(position).toString());
 
-            String filename = imageUrl.substring(imageUrl.lastIndexOf("/")+1,imageUrl.lastIndexOf("."));
+            String imageName = null;
 
-            final String imageName = "Wallpaper_" + filename + ".jpg";
+            String filename = null;
 
-            File f = new File(wallpaperDirectory, imageName);
+            File f = null;
 
-            if (f.exists()){
+            if(!imageUrl.contains(Constants.DRIVE_STRING)) {
 
-                Toast.makeText(getApplicationContext(),"File Already Exits",Toast.LENGTH_LONG).show();
+                 filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1, imageUrl.lastIndexOf("."));
 
-                BitmapFactory.Options options = new BitmapFactory.Options();
+                 imageName = "Wallpaper_" + filename + ".jpg";
 
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
-                Bitmap bitmap = BitmapFactory.decodeFile(dirPath+"/"+"Wallpaper_" + filename + ".jpg", options);
-
-                imageView.setImage(ImageSource.bitmap(bitmap));
-
-                progressWheel.setVisibility(View.GONE);
-
-                progressWheel.stopAnimation();
+                 f = new File(wallpaperDirectory, imageName);
 
             }else {
+
+                filename = imageUrl.substring(imageUrl.indexOf("="),imageUrl.length()-1);
+
+                imageName = "Wallpaper_" + filename + ".jpg";
+
+                f = new File(wallpaperDirectory, imageName);
+            }
+
+
+
+                if (f.exists()) {
+
+                    Toast.makeText(getApplicationContext(), "File Already Exits", Toast.LENGTH_LONG).show();
+
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+
+                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(dirPath + "/" + "Wallpaper_" + filename + ".jpg", options);
+
+                    imageView.setImage(ImageSource.bitmap(bitmap));
+
+                    progressWheel.setVisibility(View.GONE);
+
+                    progressWheel.stopAnimation();
+
+                } else {
 
                 Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.loading);
 
                 imageView.setImage(ImageSource.bitmap(largeIcon));
 
+
+                imageUrl = arrayList.get(position).toString();
+
+                String originalImage = getImageLink(imageUrl);
+
+                //you have to get the part of the link 0B9nFwumYtUw9Q05WNlhlM2lqNzQ
+
+                //Create the new image link
+
+              //  Picasso.with(YourActivity.this).load(imageLink).into(imageView);
                 Glide.with(context)
-                        .load(arrayList.get(position))
+                        .load(originalImage)
                         .asBitmap()
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-
+                                progressWheel.setVisibility(View.GONE);
+                                progressWheel.stopAnimation();
                                 imageView.setImage(ImageSource.bitmap(bitmap));
 
                             }
@@ -393,7 +460,7 @@ ProgressDialog prog;
                                 imageView.setImage(ImageSource.bitmap(largeIcon));
 
 
-                                Toast.makeText(context, "Image loading failed", Toast.LENGTH_SHORT).show();
+
 
                             }
 
@@ -417,12 +484,13 @@ ProgressDialog prog;
                 public void onDoubleTap(MotionEvent e) {
                     super.onDoubleTap(e);
 
-                    Toast.makeText(context, "DoubleTap", Toast.LENGTH_SHORT).show();
                 }
             });
 
 
             imageView.setMaxScale(8);
+            imageView.setZoomEnabled(true);
+
             imageView.setDoubleTapZoomScale(4);
             imageView.setDoubleTapZoomStyle(2);
 
@@ -534,6 +602,8 @@ ProgressDialog prog;
             public boolean onDoubleTap(MotionEvent e) {
                 OnDoubleTapListener.this.onDoubleTap(e);
                 return super.onDoubleTap(e);
+
+
             }
         }
 

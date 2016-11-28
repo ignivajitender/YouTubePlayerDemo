@@ -13,7 +13,8 @@
 
     <bool name="ga_reportUncaughtExceptions">true</bool>
     <screenName name="com.igniva.youtubeplayer.ui.activities.MainActivity">Dashboard</screenName>
-    <screenName name="com.igniva.youtubeplayer.ui.activities.YouTubeActivity">Dashboard</screenName>
+    <screenName name="com.igniva.youtubeplayer.ui.activities.YouTubeActivity">Settings Page</screenName>
+    <screenName name="com.igniva.youtubeplayer.ui.activities.All_Image_View">Open Full View Of Image</screenName>
 
     <!--
       See Project Structure -> Analytics -> Google Analytics -> Learn More

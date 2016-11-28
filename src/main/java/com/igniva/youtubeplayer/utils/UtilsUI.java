@@ -50,6 +50,7 @@ import static com.igniva.youtubeplayer.ui.activities.MainActivity.TRACK_LOG;
 public class UtilsUI {
 
 
+    private static final String BUTTON_CLICK_EVENT = "click event" ;
     public static boolean galery_status, favourite_status, channels_status;
 
     static MainActivity m;
@@ -135,6 +136,8 @@ public class UtilsUI {
                 switch (iDrawerItem.getIdentifier()) {
                     case 1:
 
+                        MyApplication.getInstance().trackEvent("Dashboard","View Latest Videos",BUTTON_CLICK_EVENT);
+
                         favourite_status = false;
 
                         galery_status = false;
@@ -145,6 +148,8 @@ public class UtilsUI {
 
                         break;
                     case 2:
+
+                        MyApplication.getInstance().trackEvent("Dashboard","View Gallery",BUTTON_CLICK_EVENT);
 
                         favourite_status = false;
 
@@ -157,6 +162,9 @@ public class UtilsUI {
                         break;
 
                     case 3:
+
+
+                        MyApplication.getInstance().trackEvent("Dashboard","View Favourites",BUTTON_CLICK_EVENT);
 
                         favourite_status = true;
 
@@ -171,6 +179,8 @@ public class UtilsUI {
                         break;
 
                     case 4:
+
+                        MyApplication.getInstance().trackEvent("Dashboard","Open Settings",BUTTON_CLICK_EVENT);
 
                         favourite_status = false;
 
@@ -195,6 +205,9 @@ public class UtilsUI {
                         break;
 
                     case 5:
+
+                        MyApplication.getInstance().trackEvent("Dashboard","Rate The App",BUTTON_CLICK_EVENT);
+
 
                         Uri uri = Uri.parse("market://details?id=" + "com.sqwip");
 
@@ -226,7 +239,10 @@ public class UtilsUI {
 
                     case 6:
 
-                         uri = Uri.parse("market://search?q=pub:saga");
+                        MyApplication.getInstance().trackEvent("Dashboard","View More Free Apps",BUTTON_CLICK_EVENT);
+
+
+                        uri = Uri.parse("market://search?q=pub:saga");
 
                         Intent moreFreeApps = new Intent(Intent.ACTION_VIEW, uri);
                         // To count with Play market backstack, After pressing back button,
@@ -254,6 +270,9 @@ public class UtilsUI {
                         break;
 
                     case 7:
+
+                        MyApplication.getInstance().trackEvent("Dashboard","Share App",BUTTON_CLICK_EVENT);
+
                         String appname = getAppName(context);
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
 

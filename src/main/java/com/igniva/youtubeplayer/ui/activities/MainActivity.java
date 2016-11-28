@@ -91,8 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         context = getApplicationContext();
 
-        device_id = Settings.Secure.getString(this.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+
 
         mDatabaseHandler = new DatabaseHandler(MainActivity.this);
 
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
 
                 try {
-                    MyApplication.getInstance().trackEvent("Dashboard",BUTTON_CLICK_EVENT,"Latest Video Clicked");
+                    MyApplication.getInstance().trackEvent("Dashboard","Latest Video Clicked",BUTTON_CLICK_EVENT);
 
                     fetchLatestVideos();
 
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 }catch (Exception e){
                     e.printStackTrace();
-                    MyApplication.getInstance().trackEvent(TRACK_LOG,"Latest button pressed",e.getMessage());
+                    MyApplication.getInstance().trackEvent(TRACK_LOG,"View Latest Videos",e.getMessage());
 
                 }
 
@@ -170,6 +169,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                MyApplication.getInstance().trackEvent("Dashboard","View Top Rated Items",BUTTON_CLICK_EVENT);
 
                 menu_fab.close(true);
 
@@ -182,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                MyApplication.getInstance().trackEvent("Dashboard","View Favourites",BUTTON_CLICK_EVENT);
 
                 UtilsUI.favourite_status = true;
 
