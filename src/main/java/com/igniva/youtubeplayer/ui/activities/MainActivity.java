@@ -22,6 +22,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -30,7 +34,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
 import com.igniva.youtubeplayer.libs.FloatingActionMenu;
@@ -82,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +149,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+              //  try {
+//                    Firebase.setAndroidContext(getApplicationContext());
+//
+//
+//                    Firebase ref = new Firebase(Constants.FIREBASE_URL);
+//
+//                    DataGalleryPojo person = new DataGalleryPojo();
+//
+//                    //Adding values
+//                    person.setImage_no("2");
+//                    person.setImage_link("test_link1");
+//                    person.setThumb_image("test_link1");
+//
+//                    //Storing values to firebase
+//                    ref.child("DataGalleryPojo").setValue(person);
+//
+//
+//                    ref.addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot snapshot) {
+//
+//                            for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                                //Getting the data from snapshot
+//                                DataGalleryPojo person = postSnapshot.getValue(DataGalleryPojo.class);
+//
+//                                //Adding it to a string
+//                                String string = "Name: " + person.getImage_link();
+//
+//                                //Displaying it on textview
+//                                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(FirebaseError firebaseError) {
+//                            System.out.println("The read failed: " + firebaseError.getMessage());
+//                        }
+//                    });
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    Log.i("firebase Error",e.getMessage());
+//                }
 
                 try {
                     MyApplication.getInstance().trackEvent("Dashboard","Latest Video Clicked",BUTTON_CLICK_EVENT);

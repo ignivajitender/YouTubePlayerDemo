@@ -4,6 +4,8 @@ package com.igniva.youtubeplayer.ui.application;
  * Created by igniva-android-21 on 25/11/16.
  */
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -92,5 +94,9 @@ public class MyApplication extends Application {
         // Build and send an Event.
         t.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).setLabel(label).build());
     }
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        MultiDex.install(this);
+    }
 }

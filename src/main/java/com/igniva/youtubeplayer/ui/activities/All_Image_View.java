@@ -460,7 +460,7 @@ public class All_Image_View extends AppCompatActivity {
                                 imageView.setImage(ImageSource.bitmap(largeIcon));
 
 
-
+                            //    Toast.makeText(context, "Image loading failed", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -478,21 +478,11 @@ public class All_Image_View extends AppCompatActivity {
 
 
 
-            imageView.setOnTouchListener(new OnDoubleTapListener(context)
-            {
-                @Override
-                public void onDoubleTap(MotionEvent e) {
-                    super.onDoubleTap(e);
-
-                }
-            });
-
-
-            imageView.setMaxScale(8);
+            imageView.setMaxScale(10);
             imageView.setZoomEnabled(true);
 
-            imageView.setDoubleTapZoomScale(4);
-            imageView.setDoubleTapZoomStyle(2);
+            imageView.setDoubleTapZoomScale(6);
+            imageView.setDoubleTapZoomStyle(3);
 
 
             container.addView(layout);
@@ -511,7 +501,7 @@ public class All_Image_View extends AppCompatActivity {
         final BasicImageDownloader downloader = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
             @Override
             public void onError(BasicImageDownloader.ImageError error) {
-                Toast.makeText(All_Image_View.this, "Error code " + error.getErrorCode() + ": " +
+                Toast.makeText(All_Image_View.this, " Error code " + error.getErrorCode() + ": " +
                         error.getMessage(), Toast.LENGTH_LONG).show();
                 error.printStackTrace();
 
@@ -579,37 +569,6 @@ public class All_Image_View extends AppCompatActivity {
     }
 
 
-    public class OnDoubleTapListener implements View.OnTouchListener {
 
-        private GestureDetector gestureDetector;
-
-        public OnDoubleTapListener(Context c) {
-            gestureDetector = new GestureDetector(c, new GestureListener());
-        }
-
-        public boolean onTouch(final View view, final MotionEvent motionEvent) {
-            return gestureDetector.onTouchEvent(motionEvent);
-        }
-
-        private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                OnDoubleTapListener.this.onDoubleTap(e);
-                return super.onDoubleTap(e);
-
-
-            }
-        }
-
-        public void onDoubleTap(MotionEvent e) {
-            // To be overridden when implementing listener
-        }
-    }
 
 }
