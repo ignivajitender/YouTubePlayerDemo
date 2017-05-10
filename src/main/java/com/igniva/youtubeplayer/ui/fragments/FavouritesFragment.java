@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,16 +26,10 @@ import com.igniva.youtubeplayer.libs.FloatingActionMenu;
 import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
-import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.ui.adapters.FavouriteListAdapter;
 import com.igniva.youtubeplayer.ui.application.MyApplication;
-import com.igniva.youtubeplayer.utils.UtilsUI;
-
-import org.mozilla.javascript.tools.debugger.Main;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,7 +39,6 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
     View mView;
     public static RecyclerView mRvCategories;
     private SharedPreferences sharedPreferences;
-    ArrayList<String> small_images_url, medium_images_url, large_images_url;
     List<DataYoutubePojo> mAllData;
     public static TextView message;
     public static RelativeLayout no_data_found_layout;
@@ -76,10 +70,6 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
         channels_name = new ArrayList<>();
         channel_thumb = new ArrayList<>();
 
-        small_images_url = new ArrayList<>();
-        medium_images_url = new ArrayList<>();
-        large_images_url = new ArrayList<>();
-
         listCategories = new ArrayList<String>();
         listDuration = new ArrayList<String>();
         listNames = new ArrayList<String>();
@@ -89,13 +79,14 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
         // Reading all contacts
 
         message = (TextView) mView.findViewById(R.id.iv_message);
-        no_data_found_layout = (RelativeLayout)mView.findViewById(R.id.no_data_found_layout);
+        no_data_found_layout = (RelativeLayout) mView.findViewById(R.id.no_data_found_layout);
 
 
         mDatabaseHandler = new DatabaseHandler(getActivity());
 
         fetchLatestVideos();
 
+        ((SwipeRefreshLayout) mView.findViewById(R.id.swipe_refresh_layout)).setEnabled(false);
 
         return mView;
     }
@@ -120,20 +111,19 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
     }
 
 
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu,inflater);
-}
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         return false;
-}
-    private  void clear() {
-        mAllData .clear();
+    }
+
+    private void clear() {
+        mAllData.clear();
         channel_thumb.clear();
         channels_name.clear();
 
@@ -155,7 +145,7 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
 
     }
 
-    public void fetchLatestVideos(){
+    public void fetchLatestVideos() {
         mAllData = mDatabaseHandler.getAllContacts();
 
         for (DataYoutubePojo cn : mAllData) {
@@ -164,7 +154,7 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
                     " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
                     " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
 
-            if (cn.getVideo_favourite().equals("1")) {
+            if (cn.getVideo_favourite() != null && cn.getVideo_favourite().equals("1")) {
                 listCategories.add(cn.getVideo_id().toString());
                 listNames.add(cn.getVideo_title().toString());
                 listDuration.add(cn.getVideo_duration().toString());
@@ -178,14 +168,8 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
         }
         if (listCategories.size() == 0) {
             no_data_found_layout.setVisibility(View.VISIBLE);
-            ;
         }
 
-        for (DataGalleryPojo cn : mAllImages) {
-
-            large_images_url.add(cn.getImage_link().toString());
-
-        }
         setUpLayouts();
 
     }
@@ -193,11 +177,11 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
     @Override
     public void onMenuToggle(boolean opened) {
 
-        if(opened){
+        if (opened) {
 
             menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_clear_white_24dp));
 
-        }else {
+        } else {
 
             menu_fab.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_nav_filter));
 
@@ -206,7 +190,7 @@ public class FavouritesFragment extends BaseFragment implements FloatingActionMe
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
 
         super.onResume();
         Tracker tracker = MyApplication.getInstance().getGoogleAnalyticsTracker();

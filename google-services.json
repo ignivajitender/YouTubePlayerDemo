@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "86988558300",
+    "firebase_url": "https://youtubeplayer-3cac3.firebaseio.com",
+    "project_id": "youtubeplayer-3cac3",
+    "storage_bucket": "youtubeplayer-3cac3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86988558300:android:522428668bf09644",
+        "android_client_info": {
+          "package_name": "com.igniva.youtubeplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "86988558300-t6bq7hmno0qfd3edfgf28smpgm9mqo7v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.igniva.youtubeplayer",
+            "certificate_hash": "eadacf6d9aa587f51c0abb7eff271db4e4f8ba0a"
+          }
+        },
+        {
+          "client_id": "86988558300-b9begpbjuo049vhn4lash6glim6q6441.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDoO6f0lPgoVnJjiBmAFxPS6BRxW51AJU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "86988558300-b9begpbjuo049vhn4lash6glim6q6441.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

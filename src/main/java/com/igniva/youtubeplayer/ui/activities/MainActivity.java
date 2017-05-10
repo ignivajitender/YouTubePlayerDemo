@@ -1,20 +1,16 @@
 package com.igniva.youtubeplayer.ui.activities;
 
-import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,18 +18,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
+import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
 import com.igniva.youtubeplayer.libs.FloatingActionMenu;
@@ -42,34 +31,29 @@ import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
 import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
-
 import com.igniva.youtubeplayer.ui.fragments.FavouritesFragment;
-import com.igniva.youtubeplayer.ui.fragments.TopRatedCategoryFragment;
 import com.igniva.youtubeplayer.utils.Constants;
 import com.igniva.youtubeplayer.utils.UtilsUI;
 import com.mikepenz.materialdrawer.Drawer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import com.igniva.youtubeplayer.R;
-
 
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FloatingActionMenu.OnMenuToggleListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FloatingActionMenu.OnMenuToggleListener {
     static FragmentManager fragmentManager;
     private Context context;
     private Drawer drawer;
     public static Toolbar toolbar;
     private Boolean doubleBackToExitPressedOnce = false;
-   public static List<DataYoutubePojo> mAllData;
-   public static List<DataGalleryPojo> mAllImages;
+    public static List<DataYoutubePojo> mAllData;
+    public static List<DataGalleryPojo> mAllImages;
     DatabaseHandler mDatabaseHandler;
-    public static String TRACK_LOG= "track log event";
-    public static String BUTTON_CLICK_EVENT= "button clicked";
+    public static String TRACK_LOG = "track log event";
+    public static String BUTTON_CLICK_EVENT = "button clicked";
     public static ArrayList<String> listCategories, listDuration, listNames, listRating, listFavourite;
 
     InterstitialAd mInterstitialAd;
@@ -79,8 +63,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AdView mAdView;
 
 
-    FloatingActionButton fab1,fab2,fab3;
+    FloatingActionButton fab1, fab2, fab3;
     public static FloatingActionMenu menu_fab;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -92,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         context = getApplicationContext();
-
-
 
         mDatabaseHandler = new DatabaseHandler(MainActivity.this);
 
@@ -113,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             drawer = UtilsUI.setNavigationDrawer(MainActivity.this, MainActivity.this, toolbar);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 
@@ -121,13 +104,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer.getDrawerLayout();
         //
-        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         MenuItem item = navigationView.getMenu().getItem(0);
         onNavigationItemSelected(item);
 
 
-       replaceFragment(new CategoriesFragment());
+        replaceFragment(new CategoriesFragment());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -150,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-              //  try {
+                //  try {
 //                    Firebase.setAndroidContext(getApplicationContext());
 //
 //
@@ -194,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                }
 
                 try {
-                    MyApplication.getInstance().trackEvent("Dashboard","Latest Video Clicked",BUTTON_CLICK_EVENT);
+                    MyApplication.getInstance().trackEvent("Dashboard", "Latest Video Clicked", BUTTON_CLICK_EVENT);
 
                     fetchLatestVideos();
 
@@ -202,9 +185,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     MainActivity.toolbar.setTitle("Latest Videos");
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                    MyApplication.getInstance().trackEvent(TRACK_LOG,"View Latest Videos",e.getMessage());
+                    MyApplication.getInstance().trackEvent(TRACK_LOG, "View Latest Videos", e.getMessage());
 
                 }
 
@@ -215,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-                MyApplication.getInstance().trackEvent("Dashboard","View Top Rated Items",BUTTON_CLICK_EVENT);
+                MyApplication.getInstance().trackEvent("Dashboard", "View Top Rated Items", BUTTON_CLICK_EVENT);
 
                 menu_fab.close(true);
 
@@ -229,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
 
-                MyApplication.getInstance().trackEvent("Dashboard","View Favourites",BUTTON_CLICK_EVENT);
+                MyApplication.getInstance().trackEvent("Dashboard", "View Favourites", BUTTON_CLICK_EVENT);
 
                 UtilsUI.favourite_status = true;
 
@@ -260,11 +243,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .build();
             mAdView.loadAd(adRequest);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 
-            MyApplication.getInstance().trackEvent(TRACK_LOG,"banner add",e.getMessage());
+            MyApplication.getInstance().trackEvent(TRACK_LOG, "banner add", e.getMessage());
 
         }
 
@@ -276,11 +259,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             Fabric.with(this, new Crashlytics());
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 
-            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+            MyApplication.getInstance().trackEvent(TRACK_LOG, "crash", e.getMessage());
 
 
         }
@@ -309,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (doubleBackToExitPressedOnce) {
 
                 showAdd();
-              //  super.onBackPressed();
+                //  super.onBackPressed();
                 return;
             }
             this.doubleBackToExitPressedOnce = true;
@@ -349,10 +332,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
 
-            MyApplication.getInstance().trackEvent(TRACK_LOG,"crash",e.getMessage());
+            MyApplication.getInstance().trackEvent(TRACK_LOG, "crash", e.getMessage());
 
         }
     }
@@ -374,7 +357,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -396,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        AppIndex.AppIndexApi.end(client, viewAction);
 //        client.disconnect();
     }
+
     @Override
     public void onPause() {
         if (mAdView != null) {
@@ -421,20 +404,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public  static void replaceFragment(Fragment fragment){
+    public static void replaceFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.left_in, R.anim.left_out);
         fragmentTransaction.replace(R.id.fl_main, fragment);
 
         fragmentTransaction.commitAllowingStateLoss();
 
-
     }
 
     @Override
     public void onMenuToggle(boolean opened) {
 
-        if(menu_fab != null) {
+        if (menu_fab != null) {
 
             if (opened) {
 
@@ -449,7 +431,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-    public void fetchLatestVideos(){
+
+    public void fetchLatestVideos() {
         clear();
         Log.d("Reading: ", "Reading all contacts..");
 
@@ -476,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void fetchTopRatedVideos(){
+    public void fetchTopRatedVideos() {
         clear();
         Log.d("Reading: ", "Reading all contacts..");
 
@@ -519,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try {
             CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(MainActivity.this, listCategories, listNames, listDuration, listRating, listFavourite, 1));
+            CategoriesFragment.mRvCategories.setAdapter(new CategoryListAdapter(MainActivity.this, mAllData, 1));
             CategoriesFragment.mRvCategories.setHasFixedSize(true);
             GridLayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 1);
             CategoriesFragment.mRvCategories.setLayoutManager(mLayoutManager);
@@ -528,13 +511,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void clear(){
+    public void clear() {
         listCategories.clear();
         listNames.clear();
         listDuration.clear();
         listFavourite.clear();
         listRating.clear();
     }
+
     private void showInterstitial() {
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();

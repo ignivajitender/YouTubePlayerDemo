@@ -12,28 +12,22 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.igniva.youtubeplayer.model.DataGalleryPojo;
+import com.igniva.youtubeplayer.R;
+import com.igniva.youtubeplayer.db.DatabaseHandler;
 import com.igniva.youtubeplayer.ui.activities.MainActivity;
+import com.igniva.youtubeplayer.ui.activities.YouTubeActivity;
 import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
-import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapter;
-import com.igniva.youtubeplayer.ui.adapters.CategoryListAdapterGallery;
-import com.igniva.youtubeplayer.R;
-import com.igniva.youtubeplayer.model.DataYoutubePojo;
-import com.igniva.youtubeplayer.db.DatabaseHandler;
-import com.igniva.youtubeplayer.ui.activities.YouTubeActivity;
 import com.igniva.youtubeplayer.ui.fragments.FavouritesFragment;
 import com.igniva.youtubeplayer.ui.fragments.GallaryFragment;
+import com.igniva.youtubeplayer.ui.fragments.GiphyFragment;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -48,7 +42,6 @@ import static com.igniva.youtubeplayer.ui.activities.MainActivity.TRACK_LOG;
 
 
 public class UtilsUI {
-
 
     private static final String BUTTON_CLICK_EVENT = "click event" ;
     public static boolean galery_status, favourite_status, channels_status;
@@ -114,19 +107,23 @@ public class UtilsUI {
 
                 new PrimaryDrawerItem().withName("Gallery").withIcon(R.drawable.ic_menu_gallery).withIdentifier(2),
 
-                new PrimaryDrawerItem().withName("Favourite").withIcon(R.drawable.ic_favorite_black_24dp).withIdentifier(3),
+                new PrimaryDrawerItem().withName("Giphy").withIcon(R.drawable.ic_menu_gallery).withIdentifier(3),
+
+                new PrimaryDrawerItem().withName("Favourite").withIcon(R.drawable.ic_favorite_black_24dp).withIdentifier(4),
 
               //  new PrimaryDrawerItem().withName("Gallery").withIcon(R.drawable.ic_menu_gallery).withIdentifier(5),
 
                 new DividerDrawerItem(),
 
-                new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.ic_settings_black_24dp).withSelectable(false).withIdentifier(4),
 
-                new SecondaryDrawerItem().withName("Rate Us").withIcon(R.drawable.top_rated).withSelectable(false).withIdentifier(5),
 
-                new SecondaryDrawerItem().withName("More Free Apps").withIcon(R.drawable.ic_menu_send).withSelectable(false).withIdentifier(6),
+                new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.ic_settings_black_24dp).withSelectable(false).withIdentifier(5),
 
-                new SecondaryDrawerItem().withName("Share").withIcon(R.drawable.ic_menu_share).withSelectable(false).withIdentifier(7));
+                new SecondaryDrawerItem().withName("Rate Us").withIcon(R.drawable.top_rated).withSelectable(false).withIdentifier(6),
+
+                new SecondaryDrawerItem().withName("More Free Apps").withIcon(R.drawable.ic_menu_send).withSelectable(false).withIdentifier(7),
+
+                new SecondaryDrawerItem().withName("Share").withIcon(R.drawable.ic_menu_share).withSelectable(false).withIdentifier(8));
 
 
         drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -160,8 +157,21 @@ public class UtilsUI {
                         MainActivity.toolbar.setTitle("Gallery");
 
                         break;
-
                     case 3:
+
+                        MyApplication.getInstance().trackEvent("Dashboard","View Giphy",BUTTON_CLICK_EVENT);
+
+                        favourite_status = false;
+
+                        MainActivity.replaceFragment(new GiphyFragment());
+
+                        MainActivity.menu_fab.close(true);
+
+                        MainActivity.toolbar.setTitle("Giphy");
+
+                        break;
+
+                    case 4:
 
 
                         MyApplication.getInstance().trackEvent("Dashboard","View Favourites",BUTTON_CLICK_EVENT);
@@ -178,7 +188,7 @@ public class UtilsUI {
 
                         break;
 
-                    case 4:
+                    case 5:
 
                         MyApplication.getInstance().trackEvent("Dashboard","Open Settings",BUTTON_CLICK_EVENT);
 
@@ -204,7 +214,7 @@ public class UtilsUI {
 
                         break;
 
-                    case 5:
+                    case 6:
 
                         MyApplication.getInstance().trackEvent("Dashboard","Rate The App",BUTTON_CLICK_EVENT);
 
@@ -237,7 +247,7 @@ public class UtilsUI {
                         break;
 
 
-                    case 6:
+                    case 7:
 
                         MyApplication.getInstance().trackEvent("Dashboard","View More Free Apps",BUTTON_CLICK_EVENT);
 
@@ -269,7 +279,7 @@ public class UtilsUI {
 
                         break;
 
-                    case 7:
+                    case 8:
 
                         MyApplication.getInstance().trackEvent("Dashboard","Share App",BUTTON_CLICK_EVENT);
 
@@ -281,6 +291,7 @@ public class UtilsUI {
                        MaterialDialog.Builder  materialDialog = new MaterialDialog.Builder((Activity)context)
                                 .title(context.getResources().getString(R.string.share)+" " +appname)
                                 .customView(v,true)
+                               .content("kjhmj")
 
                                 .negativeText(context.getResources().getString(R.string.Later))
                                 .positiveText(context.getResources().getString(R.string.share))

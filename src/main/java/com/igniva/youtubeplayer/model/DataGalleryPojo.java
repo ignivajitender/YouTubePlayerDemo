@@ -9,6 +9,9 @@ public class DataGalleryPojo implements Serializable {
 
     //private variables
     String image_no;
+    String image_link;
+    String thumb_image;
+    String image_fire_base_id;
 
     public String getImage_link() {
         return image_link;
@@ -26,9 +29,6 @@ public class DataGalleryPojo implements Serializable {
         this.image_no = image_no;
     }
 
-    String image_link;
-
-    String thumb_image;
 
     public String getThumb_image() {
         return thumb_image;
@@ -36,5 +36,14 @@ public class DataGalleryPojo implements Serializable {
 
     public void setThumb_image(String thumb_image) {
         this.thumb_image = thumb_image;
+    }
+
+
+    public String getImage_fire_base_id() {
+        return image_fire_base_id;
+    }
+
+    public void setImage_fire_base_id(String image_fire_base_id) {
+        this.image_fire_base_id = image_fire_base_id;
     }
 }

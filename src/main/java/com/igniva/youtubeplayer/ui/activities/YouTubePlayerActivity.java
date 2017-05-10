@@ -24,13 +24,12 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayer.ErrorReason;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.gson.Gson;
-import com.igniva.youtubeplayer.utils.OrientationEnum;
 import com.igniva.youtubeplayer.utils.AudioUtil;
+import com.igniva.youtubeplayer.utils.OrientationEnum;
 import com.igniva.youtubeplayer.utils.StatusBarUtil;
 import com.igniva.youtubeplayer.utils.YouTubeApp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -77,19 +76,18 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
 
     private MyPlayerStateChangeListener playerStateChangeListener;
     private MyPlaybackEventListener playbackEventListener;
-    public  List<String> listCategories;
+    public List<String> listCategories;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPreferences.edit();
         gson = new Gson();
         initialize();
-
-
 
 
         playerView = new YouTubePlayerView(this);
@@ -110,14 +108,14 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
         listCategories = new ArrayList<String>();
 //        listCategories= Arrays.asList("CEFWMP5M6Zk","aWMTj-rejvc","nCD2hj6zJEc","iS1g8G_njx8","vxIj3JKEGvE","9s5l6w-35Wc","zFxo_397aL8","6HiAZTrCf_s","TrupdvVQnpM","i2MbOhBkkf0","dYei_71npF4");
 
-        listCategories=getIntent().getStringArrayListExtra("mListCategories");
+        listCategories = getIntent().getStringArrayListExtra("mListCategories");
 
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(),
                     PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
             googleApiKey = bundle.getString(META_DATA_NAME);
-            Log.e("google api key",googleApiKey);
+            Log.e("google api key", googleApiKey);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -143,7 +141,7 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
 
 
         String orientation_json = sharedPreferences.getString("orientationEnum", "AUTO");
-         orientationEnum = gson.fromJson(orientation_json, OrientationEnum.class);
+        orientationEnum = gson.fromJson(orientation_json, OrientationEnum.class);
 
         if (orientationEnum == null)
             orientationEnum = OrientationEnum.AUTO;
@@ -151,18 +149,18 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
 
 //        showAudioUi = getIntent().getBooleanExtra(EXTRA_SHOW_AUDIO_UI, true);
 
-        showAudioUi=sharedPreferences.getBoolean("showAudioUi",true);
+        showAudioUi = sharedPreferences.getBoolean("showAudioUi", true);
 
         handleError = getIntent().getBooleanExtra(EXTRA_HANDLE_ERROR, true);
 //        animEnter = getIntent().getIntExtra(EXTRA_ANIM_ENTER, 0);
 
-        animEnter=sharedPreferences.getInt("anim_enter",0);
+        animEnter = sharedPreferences.getInt("anim_enter", 0);
 
 //        animExit = getIntent().getIntExtra(EXTRA_ANIM_EXIT, 0);
 
-        animExit=sharedPreferences.getInt("anim_exit",0);
+        animExit = sharedPreferences.getInt("anim_exit", 0);
 
-        index_no=getIntent().getIntExtra("index_no", 0);
+        index_no = getIntent().getIntExtra("index_no", 0);
 
     }
 
@@ -218,8 +216,7 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
 
         if (!wasRestored)
 
-        player.loadVideos(listCategories,index_no,index_no);
-
+            player.loadVideos(listCategories, index_no, index_no);
 
 
     }
@@ -244,6 +241,7 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
             playerView.initialize(googleApiKey, this);
         }
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -288,6 +286,7 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
                 break;
         }
     }
+
     @Override
     public void onError(ErrorReason reason) {
         Log.e("onError", "onError : " + reason.name());
@@ -349,7 +348,8 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
     }
 
     @Override
-    public void onNext() {}
+    public void onNext() {
+    }
 
     @Override
     public void onPlaylistEnded() {
@@ -415,14 +415,14 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
         public void onLoading() {
             // Called when the player is loading a video
             // At this point, it's not ready to accept commands affecting playback such as play() or pause()
-            Log.e("Video Loading","Video Loading");
+            Log.e("Video Loading", "Video Loading");
         }
 
         @Override
         public void onLoaded(String s) {
             // Called when a video is done loading.
             // Playback methods such as play(), pause() or seekToMillis(int) may be called after this callback.
-            Log.e("Video Loaded","Video Loaded");
+            Log.e("Video Loaded", "Video Loaded");
         }
 
         @Override
@@ -433,7 +433,7 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements
         @Override
         public void onVideoStarted() {
             // Called when playback of the video starts.
-            Log.e("Video Started","Video Started");
+            Log.e("Video Started", "Video Started");
         }
 
         @Override

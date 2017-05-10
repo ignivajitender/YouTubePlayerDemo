@@ -86,7 +86,7 @@ public class TopRatedCategoryFragment extends BaseFragment implements FloatingAc
             mRvCategories = (RecyclerView) mView.findViewById(R.id.rv_categories);
 
             mRvCategories.setVisibility(View.VISIBLE);
-            mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), listCategories, listNames, listDuration, listRating, listFavourite, 1));
+            mRvCategories.setAdapter(new CategoryListAdapter(getActivity(), mAllData, 1));
             mRvCategories.setHasFixedSize(true);
             GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 1);
             mRvCategories.setLayoutManager(mLayoutManager);

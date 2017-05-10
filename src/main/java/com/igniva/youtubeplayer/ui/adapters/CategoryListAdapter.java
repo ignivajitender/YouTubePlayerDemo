@@ -1,16 +1,13 @@
 package com.igniva.youtubeplayer.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -19,21 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import com.google.android.youtube.player.YouTubePlayer;
 import com.igniva.youtubeplayer.R;
-import com.igniva.youtubeplayer.model.DataYoutubePojo;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
-import com.igniva.youtubeplayer.ui.activities.MainActivity;
+import com.igniva.youtubeplayer.model.DataYoutubePojo;
+import com.igniva.youtubeplayer.ui.activities.YouTubePlayerActivity;
 import com.igniva.youtubeplayer.ui.fragments.CategoriesFragment;
 import com.igniva.youtubeplayer.utils.OrientationEnum;
-import com.igniva.youtubeplayer.utils.QualityEnum;
-import com.igniva.youtubeplayer.ui.activities.YouTubePlayerActivity;
-import com.igniva.youtubeplayer.utils.UtilsUI;
-import com.igniva.youtubeplayer.utils.YouTubeThumbnail;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -47,45 +38,27 @@ import yt.sdk.access.YTSDK;
  */
 public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.ViewHolder> {
 
-    public static ArrayList<String> mListCategories = new ArrayList<>();
-    ;
-    ArrayList<String> mListNames = new ArrayList<>();
-    ;
-    ArrayList<String> mListDuration = new ArrayList<>();
-    ;
-    ArrayList<String> mListRating = new ArrayList<>();
-    ;
-    ArrayList<String> mListFavourite = new ArrayList<>();
-    ;
-    ;
+    private List<DataYoutubePojo> dataYoutubePojos;
 
     YTSDK sdk = null;
 
     Context mContext;
-    Activity activity;
-    SQLiteDatabase db;
+    private DatabaseHandler db;
     static List<DataYoutubePojo> contacts;
     int mData;
     SharedPreferences sharedPreferences;
 
-    public CategoryListAdapter(Context context, ArrayList<String> listCategories, ArrayList<String> listNames, ArrayList<String> listDuration, ArrayList<String> listRating, ArrayList<String> listFavourite, int data) throws InitializationException {
-        this.mListCategories = listCategories;
-        this.mListNames = listNames;
-        this.mListDuration = listDuration;
-        this.mListRating = listRating;
-        this.mListFavourite = listFavourite;
+    public CategoryListAdapter(Context context, List<DataYoutubePojo> youtubePojos, int data) throws InitializationException {
+        this.dataYoutubePojos = youtubePojos;
         this.mContext = context;
-
         this.mData = data;
-
-        if (mListCategories.size() != 0) {
-            CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
-        } else {
-            CategoriesFragment.mRvCategories.setVisibility(View.GONE);
-        }
-
+        db = new DatabaseHandler(mContext);
+//        if (mListCategories.size() != 0) {
+        CategoriesFragment.mRvCategories.setVisibility(View.VISIBLE);
+//        } else {
+//            CategoriesFragment.mRvCategories.setVisibility(View.GONE);
+//        }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-
     }
 
 
@@ -105,8 +78,6 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
             mIvFavourite = (ImageView) itemView.findViewById(R.id.iv_star_favourite);
             mIvShareIcon = (ImageView) itemView.findViewById(R.id.iv_share_icon);
-
-
         }
     }
 
@@ -120,39 +91,31 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-
         try {
 
-            final DatabaseHandler db = new DatabaseHandler(mContext);
-
             LayerDrawable stars = (LayerDrawable) holder.mRatingBar.getProgressDrawable();
-
             stars.getDrawable(2).setColorFilter(Color.parseColor("#D32F2F"), PorterDuff.Mode.SRC_ATOP);
-
-            holder.mRatingBar.setRating(Float.parseFloat(mListRating.get(position).toString()));
+            holder.mRatingBar.setRating(dataYoutubePojos.get(position).getVideo_rating());
 
             Picasso.with(mContext)
-                    .load(YouTubeThumbnail.getUrlFromVideoId(mListCategories.get(position), QualityEnum.HIGH))
+                    .load(dataYoutubePojos.get(position).getVideo_thumb())
                     .fit()
                     .into(holder.mTvCategoryImg);
 
-            holder.mTvCategoryName.setText(mListNames.get(position));
+            holder.mTvCategoryName.setText(dataYoutubePojos.get(position).getVideo_title());
+            holder.mTvCategoryDuration.setText(dataYoutubePojos.get(position).getVideo_duration());
 
-            holder.mTvCategoryDuration.setText(mListDuration.get(position));
 
-            if (mListFavourite.get(position).equals("0")) {
+            if (dataYoutubePojos.get(position).getVideo_favourite().equals("0")) {
                 holder.mIvFavourite.setImageResource(R.drawable.star_grey);
             } else {
                 holder.mIvFavourite.setImageResource(R.drawable.star_golden);
             }
 
-
             holder.mIvShareIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    String link = "https://www.youtube.com/watch?v=" + mListCategories.get(position);
-
+                    String link = "https://www.youtube.com/watch?v=" + dataYoutubePojos.get(position).getVideo_channel();
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "");
@@ -165,24 +128,19 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             holder.mIvFavourite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
-                    if (mListFavourite.get(position).equals("0")) {
+                    if (dataYoutubePojos.get(position).getVideo_favourite().equals("0")) {
                         holder.mIvFavourite.setImageResource(R.drawable.star_golden);
-                        //                        Toast.makeText(mContext, "clicklistener", Toast.LENGTH_SHORT).show();
-                        db.updateContact(new DataYoutubePojo(mListCategories.get(position), "1"));
-
-                        mListFavourite.set(position, "1");
-
+                        dataYoutubePojos.get(position).setVideo_favourite("1");
+                        db.updateContact(dataYoutubePojos.get(position));
+                        db.updateFavouriteInFirebase(dataYoutubePojos.get(position), "1");
                         updateAdapter();
                     } else {
                         holder.mIvFavourite.setImageResource(R.drawable.star_grey);
-                        db.updateContact(new DataYoutubePojo(mListCategories.get(position), "0"));
-                        mListFavourite.set(position, "0 ");
+                        dataYoutubePojos.get(position).setVideo_favourite("0");
+                        db.updateContact(dataYoutubePojos.get(position));
+                        db.updateFavouriteInFirebase(dataYoutubePojos.get(position), "0");
                         updateAdapter();
-
                     }
-
                 }
             });
 
@@ -190,17 +148,23 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             holder.mCvMain.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Intent intent = new Intent(mContext, YouTubePlayerActivity.class);
-                    intent.putExtra("VideoId", mListCategories.get(position));
+                    intent.putExtra("VideoId", dataYoutubePojos.get(position).getVideo_id());
                     intent.putExtra("player_style", YouTubePlayer.PlayerStyle.DEFAULT);
                     intent.putExtra("orientation", OrientationEnum.AUTO);
                     intent.putExtra("show_audio_ui", true);
                     intent.putExtra("handle_error", true);
                     intent.putExtra("anim_enter", R.anim.fade_in);
                     intent.putExtra("anim_exit", R.anim.fade_out);
-                    intent.putExtra("index_no", mListCategories.indexOf(mListCategories.get(position)));
-                    intent.putStringArrayListExtra("mListCategories", mListCategories);
+//                    intent.putExtra("index_no", dataYoutubePojos.get(position).getVideo_id());
+                    intent.putExtra("index_no", position);
+
+                    ArrayList<String> video_ids_list = new ArrayList<String>();
+                    for (int i = 0; i < dataYoutubePojos.size(); i++) {
+                        video_ids_list.add(dataYoutubePojos.get(i).getVideo_id());
+                    }
+
+                    intent.putStringArrayListExtra("mListCategories", video_ids_list);
 //                    Toast.makeText(mContext, "mListCategories= "+mListCategories.indexOf(mListCategories.get(position)), Toast.LENGTH_SHORT).show();
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(intent);
@@ -215,17 +179,12 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
 
     private void clear() {
-
-        mListCategories.clear();
-        mListNames.clear();
-        mListDuration.clear();
-        mListRating.clear();
-        mListFavourite.clear();
+        dataYoutubePojos.clear();
     }
 
     @Override
     public int getItemCount() {//return array.size
-        return mListCategories.size();
+        return dataYoutubePojos.size();
     }
 
     @Override
@@ -238,26 +197,16 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         final DatabaseHandler db = new DatabaseHandler(mContext);
         contacts = db.getAllContacts();
 
-
         for (DataYoutubePojo cn : contacts) {
             String log = "video_Id: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id" + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
                     " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
                     " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
 
-            mListCategories.add(cn.getVideo_id().toString());
-            mListNames.add(cn.getVideo_title().toString());
-            mListDuration.add(cn.getVideo_duration().toString());
-            mListRating.add("" + cn.getVideo_rating());
-            mListFavourite.add(cn.getVideo_favourite());
-
+            dataYoutubePojos.add(cn);
 
             // Writing Contacts to log
             Log.e("Name: ", log);
-
         }
-
-
     }
-
 }
 

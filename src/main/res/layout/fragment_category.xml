@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
-
+    android:gravity="center"
+    android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/no_data_found_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/no_data_found_layout"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <ImageView
+            android:id="@+id/no_data_found_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/no_data_found"
-            android:id="@+id/no_data_found_image"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:src="@drawable/no_data_found" />
+
         <TextView
+            android:id="@+id/iv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25dp"
-            android:layout_centerHorizontal="true"
-            android:text="No data found"
-            android:id="@+id/iv_message"
-            android:gravity="center"
             android:layout_below="@+id/no_data_found_image"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="No data found"
             android:textColor="#929292"
-            />
+            android:textSize="25dp" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_categories"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:layout_below="@+id/no_data_found_layout"
-        android:layout_alignParentEnd="true"
-        />
+        android:layout_below="@+id/no_data_found_layout">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:scrollbars="none" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

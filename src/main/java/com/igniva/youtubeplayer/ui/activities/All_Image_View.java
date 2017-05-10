@@ -32,7 +32,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.google.android.gms.appindexing.AppIndex;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.controller.BasicImageDownloader;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;

@@ -18,6 +18,9 @@ public class DataYoutubePojo implements Serializable{
     String video_playlist;
     String video_order;
     String video_favourite;
+    String video_fire_base_id;
+    long video_create_time;
+    long video_update_time;
 
     // Empty constructor
     public DataYoutubePojo(){
@@ -29,7 +32,8 @@ public class DataYoutubePojo implements Serializable{
     // constructor
     public DataYoutubePojo(String video_no,String video_title, String video_id , String video_channel,
                            String video_duration, int video_rating,String video_thumb,
-                           String video_playlist,String video_order,String video_favourite){
+                           String video_playlist,String video_order,String video_favourite,
+                           String video_fire_base_id, long video_create_time, long video_update_time){
         this.video_no = video_no;
         this.video_id = video_id;
         this.video_title = video_title;
@@ -41,6 +45,9 @@ public class DataYoutubePojo implements Serializable{
         this.video_playlist = video_playlist;
         this.video_order = video_order;
         this.video_favourite = video_favourite;
+        this.video_fire_base_id = video_fire_base_id;
+        this.video_create_time = video_create_time;
+        this.video_update_time = video_update_time;
     }
 
     // constructor
@@ -127,5 +134,29 @@ public class DataYoutubePojo implements Serializable{
 
     public void setVideo_favourite(String video_favourite) {
         this.video_favourite = video_favourite;
+    }
+
+    public String getVideo_fire_base_id() {
+        return video_fire_base_id;
+    }
+
+    public void setVideo_fire_base_id(String video_fire_base_id) {
+        this.video_fire_base_id = video_fire_base_id;
+    }
+
+    public long getVideo_create_time() {
+        return video_create_time;
+    }
+
+    public void setVideo_create_time(long video_create_time) {
+        this.video_create_time = video_create_time;
+    }
+
+    public long getVideo_update_time() {
+        return video_update_time;
+    }
+
+    public void setVideo_update_time(long video_update_time) {
+        this.video_update_time = video_update_time;
     }
 }

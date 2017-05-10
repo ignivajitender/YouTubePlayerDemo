@@ -1,45 +1,235 @@
 package com.igniva.youtubeplayer.ui.activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.db.DatabaseHandler;
-import com.igniva.youtubeplayer.model.DataGalleryPojo;
 import com.igniva.youtubeplayer.model.DataYoutubePojo;
-import com.igniva.youtubeplayer.utils.Constants;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * Created by igniva-php-08 on 18/7/16.
  */
 public class SplashActivity extends AppCompatActivity {
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
-    String s;
-    DatabaseHandler db;
-    List<DataYoutubePojo> mAllData;
-    List<DataGalleryPojo> mAllImages;
-    public static ArrayList<String> listCategories, listDuration, listNames, listRating, listFavourite;
-    AsyncTask<Void, Void, Void> execute;
+
+    private static final int SPLASH_DISPLAY_LENGTH = 2500;
+
+    private DatabaseHandler db;
+
+    private DatabaseReference mDatabaseVideos;
+    private DatabaseReference mDatabaseImages;
+    private ValueEventListener videoValueEventListener;
+    private ValueEventListener galleryValueEventListener;
+    private long latestVideoTime;
+    private Query firebaseVideoQuery;
+    private ChildEventListener videoChildEventListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        AsyncTask<Void, Void, Void> execute = new CreateDatabaseAsyncTask();
+        db = new DatabaseHandler(SplashActivity.this);
+        db.insertRandomRowInVideo();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                goToMainActivity();
+            }
+        }, SPLASH_DISPLAY_LENGTH);
 
-        execute.execute();
+        latestVideoTime = db.getLatestVideo();
+        Log.e("videoAdded: count: ", "" + latestVideoTime);
+        mDatabaseVideos = FirebaseDatabase.getInstance().getReference("videos");
+        firebaseVideoQuery = mDatabaseVideos.orderByChild("video_create_time").startAt(latestVideoTime);
+
+
+        videoChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                DataYoutubePojo post = dataSnapshot.getValue(DataYoutubePojo.class);
+                db.addUpdateVideoData(post, dataSnapshot.getKey());
+                Log.e("videoAdded: ", dataSnapshot.toString());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        };
+
+        videoValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e("doneeee ", dataSnapshot.toString());
+                firebaseVideoQuery.removeEventListener(videoChildEventListener);
+                firebaseVideoQuery.removeEventListener(videoValueEventListener);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        firebaseVideoQuery.addChildEventListener(videoChildEventListener);
+        firebaseVideoQuery.addListenerForSingleValueEvent(videoValueEventListener);
+
+
+//        mDatabaseImages = FirebaseDatabase.getInstance().getReference("images");
+//        mDatabaseImages.addValueEventListener(galleryValueEventListener);
+
+//        AsyncTask<Void, Void, Void> execute = new CreateDatabaseAsyncTask();
+//        execute.execute();
+    }
+
+    private void goToMainActivity() {
+//        if (isVideoSynced && isGallerySynced) {
+//            removeFirebaseListeners();
+            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+            startActivity(mainIntent);
+            finish();
+//        }
+    }
+
+//    private void initFirebaseListeners() {
+//        videoValueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                Log.e("Count ", "" + snapshot.getChildrenCount());
+//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                    DataYoutubePojo post = postSnapshot.getValue(DataYoutubePojo.class);
+//                    db.addContact(post, postSnapshot.getKey());
+//                }
+//                isVideoSynced = true;
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//
+//        galleryValueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                Log.e("Count ", "" + snapshot.getChildrenCount());
+//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                    DataGalleryPojo post = postSnapshot.getValue(DataGalleryPojo.class);
+//                    db.addGAlleryImage(post, snapshot.getKey());
+//                }
+//                isGallerySynced = true;
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
+//    }
+
+//    private void addTempDataInFirebase() {
+//
+//        DatabaseReference mDatabaseImage = FirebaseDatabase.getInstance().getReference("images");
+//        for (DataGalleryPojo cn : mAllImages) {
+//            String userId = mDatabaseImage.push().getKey();
+//            mDatabaseImage.child(userId).setValue(cn);
+//        }
+//
+//        DatabaseReference mDatabaseVideos = FirebaseDatabase.getInstance().getReference("videos");
+//        for (DataYoutubePojo cn : mAllData) {
+//            String userId = mDatabaseVideos.push().getKey();
+//            mDatabaseVideos.child(userId).setValue(cn);
+//        }
+//
+//    }
+
+//    public class CreateDatabaseAsyncTask
+//            extends AsyncTask<Void, Void, Void>
+//
+//    {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//
+//            db = new DatabaseHandler(SplashActivity.this);
+//
+//            try {
+//                db.createDataBase();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//            db.openDataBase();
+//
+//            mAllData = db.getAllContacts();
+//
+//            mAllImages = db.getAllImages();
+//
+//            for (DataGalleryPojo cn : mAllImages) {
+//                String log = "Image_index_no: " + cn.getImage_no() + " , Image_link: " + cn.getImage_link();
+//
+//                Log.e("Images_Splash: ", log);
+//            }
+//
+//            for (DataYoutubePojo cn : mAllData) {
+//                String log = "video_no: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title() + " Video_id: " + cn.getVideo_id() + "Video_channel" + cn.getVideo_channel() +
+//                        " ,Duration: " + cn.getVideo_duration() + " Rating: " + cn.getVideo_rating() + " Thumb: " + cn.getVideo_thumb() + " Playlist: " + cn.getVideo_playlist() +
+//                        " order: " + cn.getVideo_order() + " Favourite= " + cn.getVideo_favourite();
+//
+//                Log.e("Name_Splash: ", log);
+//            }
+//            db.close();
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//
+//        }
+//    }
+
+}
+
+
+
+
+// commented methods
+
+//        db.clearDataBase();
 
 
 //        listCategories = new ArrayList<String>();
@@ -87,75 +277,5 @@ public class SplashActivity extends AppCompatActivity {
 //
 //        db.close();
 
-    }
-
-    public class CreateDatabaseAsyncTask
-    extends AsyncTask<Void, Void, Void>
-
-    {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
 
 
-
-            db=new DatabaseHandler(SplashActivity.this);
-
-            try {
-                db.createDataBase();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            db.openDataBase();
-
-            mAllData=db.getAllContacts();
-
-            mAllImages=db.getAllImages();
-
-            for (DataGalleryPojo cn : mAllImages) {
-                String log = "Image_index_no: " + cn.getImage_no() + " , Image_link: " + cn.getImage_link();
-
-                Log.e("Images_Splash: ", log);
-            }
-
-            for (DataYoutubePojo cn : mAllData) {
-                String log = "video_no: " + cn.getVideo_no() + " , Video_Title: " + cn.getVideo_title()+" Video_id: "+cn.getVideo_id()+"Video_channel"+cn.getVideo_channel() +
-                        " ,Duration: " + cn.getVideo_duration()+" Rating: " + cn.getVideo_rating()+" Thumb: " + cn.getVideo_thumb()+" Playlist: " + cn.getVideo_playlist()+
-                        " order: " + cn.getVideo_order()+" Favourite= "+cn.getVideo_favourite();
-//
-//                listCategories.add(cn.getVideo_id().toString());
-//                listNames.add(cn.getVideo_title().toString());
-//                listDuration.add(cn.getVideo_duration().toString());
-//                listRating.add(cn.getVideo_rating().toString());
-//                listFavourite.add(cn.getVideo_favourite());
-
-                // Writing Contacts to log
-                Log.e("Name_Splash: ", log);
-
-            }
-
-            db.close();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class).putExtra(Constants.ALL_DATA,(Serializable) mAllData).putExtra(Constants.ALL_IMAGES,(Serializable) mAllImages);
-            startActivity(mainIntent);
-
-
-            finish();
-
-        }
-    }
-
-
-}
