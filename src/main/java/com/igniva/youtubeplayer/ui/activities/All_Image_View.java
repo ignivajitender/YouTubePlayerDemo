@@ -1,6 +1,5 @@
 package com.igniva.youtubeplayer.ui.activities;
 
-import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,15 +10,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,13 +25,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.igniva.youtubeplayer.R;
 import com.igniva.youtubeplayer.controller.BasicImageDownloader;
 import com.igniva.youtubeplayer.libs.FloatingActionButton;
-import com.igniva.youtubeplayer.libs.FloatingActionMenu;
+import com.igniva.youtubeplayer.subscaleview.ImageSource;
+import com.igniva.youtubeplayer.subscaleview.SubsamplingScaleImageView;
 import com.igniva.youtubeplayer.ui.application.MyApplication;
 import com.igniva.youtubeplayer.utils.Constants;
 
@@ -367,7 +362,7 @@ public class All_Image_View extends AppCompatActivity {
                     container, false);
 
             final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView) layout.findViewById(R.id.image_preview);
-            imageView.setZoomEnabled(true);
+//            imageView.setZoomEnabled(true);
 
             sPosition = position;
             wallpaper_list = arrayList;
@@ -438,7 +433,9 @@ public class All_Image_View extends AppCompatActivity {
 
                 //Create the new image link
 
+
               //  Picasso.with(YourActivity.this).load(imageLink).into(imageView);
+
                 Glide.with(context)
                         .load(originalImage)
                         .asBitmap()
@@ -478,10 +475,10 @@ public class All_Image_View extends AppCompatActivity {
 
 
             imageView.setMaxScale(10);
-            imageView.setZoomEnabled(true);
+//            imageView.setZoomEnabled(true);
 
             imageView.setDoubleTapZoomScale(6);
-            imageView.setDoubleTapZoomStyle(3);
+            imageView.setDoubleTapZoomStyle(1);
 
 
             container.addView(layout);
